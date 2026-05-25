@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AITourismPlanner.Models
@@ -53,5 +52,10 @@ namespace AITourismPlanner.Models
         public virtual ICollection<Favorite> Favorites { get; set; }
         public virtual ICollection<Weather> Weathers { get; set; }
         public virtual ICollection<EmergencyService> EmergencyServices { get; set; }
+
+        // =========================================================
+        // YEH NAVIGATION PROPERTY ADD KARO
+        // =========================================================
+        public virtual ICollection<Trip> Trips { get; set; }
     }
 }

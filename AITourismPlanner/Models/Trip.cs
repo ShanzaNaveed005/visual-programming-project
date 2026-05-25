@@ -10,6 +10,11 @@ namespace AITourismPlanner.Models
 
         public int? user_id { get; set; }
 
+        // =========================================================
+        // YEH PROPERTY ADD KARO - YAHI MISSING THI
+        // =========================================================
+        public int? destination_id { get; set; }
+
         [Column(TypeName = "decimal(10,2)")]
         public decimal? total_budget { get; set; }
 
@@ -29,6 +34,12 @@ namespace AITourismPlanner.Models
         // Navigation properties
         [ForeignKey("user_id")]
         public virtual User User { get; set; }
+
+        // =========================================================
+        // YEH NAVIGATION PROPERTY ADD KARO
+        // =========================================================
+        [ForeignKey("destination_id")]
+        public virtual Destination Destination { get; set; }
 
         public virtual ICollection<Itinerary> Itineraries { get; set; }
     }

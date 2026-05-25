@@ -14,4 +14,5 @@ namespace AITourismPlanner.Models
         // Navigation property
         public virtual ICollection<User> Users { get; set; }
     }
+
 }

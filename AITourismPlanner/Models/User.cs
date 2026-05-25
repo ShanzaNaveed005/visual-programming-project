@@ -50,6 +50,7 @@ namespace AITourismPlanner.Models
         public virtual ICollection<AIRecommendation> AIRecommendations { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Favorite> Favorites { get; set; }
+
         public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<ChatbotHistory> ChatbotHistories { get; set; }

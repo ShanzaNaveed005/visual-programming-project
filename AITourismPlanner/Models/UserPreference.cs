@@ -17,6 +17,7 @@ namespace AITourismPlanner.Models
         public string favorite_category { get; set; }
 
         [StringLength(100)]
+
         public string preferred_transport { get; set; }
 
         [StringLength(50)]

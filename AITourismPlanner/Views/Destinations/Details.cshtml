@@ -1,0 +1,316 @@
+﻿@model AITourismPlanner.ViewModels.DestinationDetailViewModel
+@{
+    ViewData["Title"] = Model.Destination.name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userId = Context.Session.GetInt32("UserId");
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Destinations")">Destinations</a></li>
+            <li class="breadcrumb-item active">@Model.Destination.name</li>
+        </ol>
+    </nav>
+
+    <!-- Destination Header -->
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold">@Model.Destination.name</h1>
+            <p class="text-muted">
+                <i class="fas fa-map-marker-alt text-primary"></i> @Model.Destination.city, @Model.Destination.country
+            </p>
+            <div class="mb-3">
+                @for (int i = 1; i <= (int)(Model.Destination.rating_average); i++)
+                {
+                    <i class="fas fa-star text-warning"></i>
+                }
+                @if (Model.Destination.rating_average % 1 >= 0.5m)
+                {
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                }
+                <span class="ms-2 text-muted">(@Model.Destination.rating_average.ToString("0.0") rating)</span>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary fs-6 p-3">Best Season: @Model.Destination.best_season</span>
+        </div>
+    </div>
+
+    <!-- Main Image and Info -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-8">
+            <img src="@(Model.Destination.thumbnail ?? "/images/default-destination.jpg")" 
+                 class="img-fluid rounded-4 shadow-sm" style="width: 100%; height: 400px; object-fit: cover;" 
+                 alt="@Model.Destination.name">
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold">Trip Information</h5>
+                    <hr>
+                    <p><i class="fas fa-money-bill-wave text-primary me-2"></i> Estimated Cost: <strong>PKR @Model.Destination.estimated_cost?.ToString("N0")</strong></p>
+                    <p><i class="fas fa-calendar-alt text-primary me-2"></i> Best Season: <strong>@Model.Destination.best_season</strong></p>
+                    <p><i class="fas fa-tag text-primary me-2"></i> Category: <strong>@Model.Destination.Category?.category_name</strong></p>
+                    
+                    @if (userId.HasValue)
+                    {
+                        <button onclick="addToFavorites(@Model.Destination.destination_id)" class="btn btn-outline-danger w-100 mb-2">
+                            <i class="far fa-heart me-2"></i> Save to Wishlist
+                        </button>
+                    }
+                    <a href="@Url.Action("PlanTrip", "Trips", new { destinationId = Model.Destination.destination_id })" class="btn btn-primary w-100">
+                        <i class="fas fa-robot me-2"></i> Plan with AI
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-body p-4">
+            <h4 class="fw-bold">About @Model.Destination.name</h4>
+            <p class="fs-5">@Model.Destination.description</p>
+        </div>
+    </div>
+
+    <!-- Hotels Section -->
+    @if (Model.Destination.Hotels != null && Model.Destination.Hotels.Any())
+    {
+        <div class="mb-5">
+            <h3 class="fw-bold mb-4">🏨 Hotels in @Model.Destination.name</h3>
+            <div class="row g-4">
+                @foreach (var hotel in Model.Destination.Hotels)
+                {
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                            <img src="@(hotel.image ?? "/images/hotel-default.jpg")" class="card-img-top rounded-top-4" style="height: 160px; object-fit: cover;" alt="@hotel.hotel_name">
+                            <div class="card-body">
+                                <h5 class="card-title">@hotel.hotel_name</h5>
+                                <div class="mb-2">
+                                    @for (int i = 1; i <= (hotel.star_rating ?? 0); i++)
+                                    {
+                                        <i class="fas fa-star text-warning small"></i>
+                                    }
+                                </div>
+                                <p class="card-text small">@(hotel.address ?? "Main location")</p>
+                                <p class="text-primary fw-bold">PKR @hotel.price_per_night?.ToString("N0") <span class="text-muted fw-normal">/night</span></p>
+                                <a href="@Url.Action("Details", "Hotels", new { id = hotel.hotel_id })" class="btn btn-outline-primary w-100">View Hotel</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Weather Section -->
+    @if (Model.Weather != null)
+    {
+        <div class="card bg-light border-0 rounded-4 mb-5">
+            <div class="card-body p-4">
+                <h4 class="fw-bold">🌤 Current Weather</h4>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <i class="fas fa-thermometer-half fa-3x text-primary"></i>
+                        <p class="mt-2">Temperature: <strong>@Model.Weather.temperature°C</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-tint fa-3x text-primary"></i>
+                        <p class="mt-2">Humidity: <strong>@Model.Weather.humidity%</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-cloud-sun fa-3x text-primary"></i>
+                        <p class="mt-2">Condition: <strong>@Model.Weather.weather_condition</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Emergency Services -->
+    @if (Model.EmergencyServices != null && Model.EmergencyServices.Any())
+    {
+        <div class="card bg-danger bg-opacity-10 border-0 rounded-4 mb-5">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-danger">🚨 Emergency Services</h4>
+                <div class="row">
+                    @foreach (var service in Model.EmergencyServices)
+                    {
+                        <div class="col-md-4">
+                            <p><i class="fas fa-hospital me-2"></i> <strong>@service.hospital_name</strong></p>
+                            <p><i class="fas fa-phone me-2"></i> @service.helpline_number</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Reviews Section -->
+    <div class="mb-5">
+        <h3 class="fw-bold mb-4">⭐ Reviews & Ratings</h3>
+        
+        <!-- Add Review Form -->
+        @if (userId.HasValue)
+        {
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5>Write a Review</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Your Rating</label>
+                        <div class="star-rating">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="selectedRating" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <textarea id="reviewComment" class="form-control" rows="3" placeholder="Share your experience..."></textarea>
+                    </div>
+                    <button onclick="submitReview(@Model.Destination.destination_id)" class="btn btn-primary">Submit Review</button>
+                </div>
+            </div>
+        }
+
+        <!-- Reviews List -->
+        @if (Model.Destination.Reviews != null && Model.Destination.Reviews.Any())
+        {
+            foreach (var review in Model.Destination.Reviews)
+            {
+                <div class="card shadow-sm border-0 rounded-4 mb-3">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="mb-2">
+                                    @for (int i = 1; i <= (review.rating ?? 0); i++)
+                                    {
+                                        <i class="fas fa-star text-warning"></i>
+                                    }
+                                </div>
+                                <p class="mb-2">@review.review_text</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-user me-1"></i> @(review.User?.full_name ?? "Anonymous")
+                                    <i class="fas fa-calendar ms-3 me-1"></i> @review.review_date.ToString("dd MMM yyyy")
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-4 bg-light rounded-4">
+                <i class="fas fa-comment-dots fa-3x text-muted mb-3"></i>
+                <p>No reviews yet. Be the first to review!</p>
+            </div>
+        }
+    </div>
+
+    <!-- Similar Destinations -->
+    @if (Model.SimilarDestinations != null && Model.SimilarDestinations.Any())
+    {
+        <div class="mt-5">
+            <h3 class="fw-bold mb-4">📍 Similar Destinations</h3>
+            <div class="row g-4">
+                @foreach (var dest in Model.SimilarDestinations)
+                {
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                            <img src="@(dest.thumbnail ?? "/images/default-destination.jpg")" class="card-img-top rounded-top-4" style="height: 150px; object-fit: cover;" alt="@dest.name">
+                            <div class="card-body">
+                                <h6 class="card-title">@dest.name</h6>
+                                <p class="small text-muted">@dest.city, @dest.country</p>
+                                <a href="@Url.Action("Details", new { id = dest.destination_id })" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .star-rating i {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ddd;
+        transition: color 0.2s;
+        margin-right: 5px;
+    }
+    .star-rating i:hover,
+    .star-rating i.active {
+        color: #ffc107;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Star rating
+        $('.star-rating i').on('click', function() {
+            var rating = $(this).data('rating');
+            $('#selectedRating').val(rating);
+            
+            $('.star-rating i').removeClass('active').removeClass('fas').addClass('far');
+            for (var i = 1; i <= rating; i++) {
+                $('.star-rating i[data-rating="' + i + '"]').addClass('active').removeClass('far').addClass('fas');
+            }
+        });
+
+        function submitReview(destinationId) {
+            var rating = $('#selectedRating').val();
+            var comment = $('#reviewComment').val();
+            
+            if (rating == 0) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            if (!comment) {
+                alert('Please write a review');
+                return;
+            }
+            
+            $.ajax({
+                url: '@Url.Action("AddReview", "Destinations")',
+                type: 'POST',
+                data: {
+                    destinationId: destinationId,
+                    rating: rating,
+                    comment: comment,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('Error submitting review');
+                }
+            });
+        }
+        
+        function addToFavorites(destinationId) {
+            $.ajax({
+                url: '@Url.Action("AddToFavorites", "Account")',
+                type: 'POST',
+                data: { destinationId: destinationId },
+                success: function(response) {
+                    alert(response.message);
+                }
+            });
+        }
+    </script>
+}

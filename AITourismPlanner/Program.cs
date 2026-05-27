@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using AITourismPlanner.Data;
 using AITourismPlanner.Services;
@@ -32,6 +31,9 @@ builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IItineraryGenerator, ItineraryGenerator>();
 builder.Services.AddScoped<IChatbotService, ChatbotService>();
 
+// 👇 YEH LINE IS JAGAH ADD KARDI HAI
+builder.Services.AddHttpContextAccessor();
+
 // Add HTTP Client for APIs
 builder.Services.AddHttpClient();
 
@@ -46,7 +48,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseSession();
 app.UseAuthorization();
 

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-<<<<<<< HEAD
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -29,7 +29,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-=======
+
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
@@ -37,7 +37,7 @@
 		<UserSecretsId>2504754b-a57b-406a-9e32-48ee21c5bc70</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
->>>>>>> a4ac456814dc3b91b98b4801c838ede2ffe8cbc8
+
 
 	<ItemGroup>
 		<PackageReference Include="LiveCharts" Version="0.9.7" />
@@ -49,8 +49,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
 
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
-<<<<<<< HEAD
-=======
+
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -59,7 +58,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
->>>>>>> a4ac456814dc3b91b98b4801c838ede2ffe8cbc8
+
 	</ItemGroup>
 
 </Project>

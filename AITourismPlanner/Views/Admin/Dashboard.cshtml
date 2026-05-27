@@ -1,0 +1,211 @@
+﻿@model AITourismPlanner.Controllers.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userRole = Context.Session.GetString("UserRole");
+}
+
+@if (userRole != "Admin")
+{
+    <div class="container py-5">
+        <div class="alert alert-danger text-center">
+            <i class="fas fa-ban fa-2x mb-2"></i>
+            <h4>Access Denied</h4>
+            <p>You don't have permission to access this page.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Go Home</a>
+        </div>
+    </div>
+    return;
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">
+            <i class="fas fa-chart-line text-primary"></i> Admin Dashboard
+        </h1>
+        <p class="text-muted">Welcome back! Here's what's happening with your platform today.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-primary bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Users</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalUsers</h2>
+                        </div>
+                        <div class="bg-primary rounded-circle p-3">
+                            <i class="fas fa-users text-white fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-success bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Destinations</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalDestinations</h2>
+                        </div>
+                        <div class="bg-success rounded-circle p-3">
+                            <i class="fas fa-map-marked-alt text-white fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-warning bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Bookings</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalBookings</h2>
+                        </div>
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="fas fa-hotel text-white fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-info bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Revenue</h6>
+                            <h2 class="mb-0 fw-bold">PKR @Model.TotalRevenue.ToString("N0")</h2>
+                        </div>
+                        <div class="bg-info rounded-circle p-3">
+                            <i class="fas fa-rupee-sign text-white fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Bookings -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-clock text-primary"></i> Recent Bookings
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentBookings != null && Model.RecentBookings.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Hotel</th>
+                                        <th>Check In</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var booking in Model.RecentBookings)
+                                    {
+                                        <tr>
+                                            <td>@booking.User?.full_name</td>
+                                            <td>@booking.Hotel?.hotel_name</td>
+                                            <td>@booking.check_in?.ToString("dd MMM")</td>
+                                            <td>PKR @booking.total_amount?.ToString("N0")</td>
+                                            <td>
+                                                <span class="badge bg-@(booking.booking_status == "Confirmed" ? "success" : "warning")">
+                                                    @booking.booking_status
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No bookings yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Destinations -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-fire text-primary"></i> Top Destinations
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.PopularDestinations != null && Model.PopularDestinations.Any())
+                    {
+                        @foreach (var dest in Model.PopularDestinations)
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="mb-0">@dest.name</h6>
+                                    <small class="text-muted">@dest.city</small>
+                                </div>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star"></i> @dest.rating_average.ToString("0.0")
+                                </span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-bolt text-primary"></i> Quick Actions
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-plus"></i> Add Destination
+                        </a>
+                        <a href="#" class="btn btn-outline-success">
+                            <i class="fas fa-hotel"></i> Add Hotel
+                        </a>
+                        <a href="#" class="btn btn-outline-info">
+                            <i class="fas fa-users"></i> Manage Users
+                        </a>
+                        <a href="#" class="btn btn-outline-warning">
+                            <i class="fas fa-chart-bar"></i> View Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        font-weight: 600;
+        color: #4a5568;
+    }
+    .btn-outline-primary:hover, .btn-outline-success:hover, .btn-outline-info:hover, .btn-outline-warning:hover {
+        transform: translateY(-2px);
+    }
+</style>

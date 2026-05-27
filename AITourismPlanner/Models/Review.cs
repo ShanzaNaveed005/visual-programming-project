@@ -15,7 +15,7 @@ namespace AITourismPlanner.Models
         [Range(1, 5)]
         public int? rating { get; set; }
 
-        public string review_text { get; set; }
+        public string? review_text { get; set; }
 
         public DateTime review_date { get; set; } = DateTime.Now;
 

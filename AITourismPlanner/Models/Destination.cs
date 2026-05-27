@@ -12,19 +12,10 @@ namespace AITourismPlanner.Models
         [StringLength(100)]
         public string name { get; set; }
 
-        [StringLength(100)]
-        public string city { get; set; }
-
-        [StringLength(100)]
-        public string country { get; set; }
-
-        public string description { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal? estimated_cost { get; set; }
 
-        [StringLength(50)]
-        public string best_season { get; set; }
 
         [Column(TypeName = "decimal(10,6)")]
         public decimal? latitude { get; set; }
@@ -34,8 +25,20 @@ namespace AITourismPlanner.Models
 
         public int? category_id { get; set; }
 
+        [StringLength(100)]
+        public string? city { get; set; }
+
+        [StringLength(100)]
+        public string? country { get; set; }
+
+
+        public string? description { get; set; }
+
+        [StringLength(50)]
+        public string? best_season { get; set; }
+
         [StringLength(255)]
-        public string thumbnail { get; set; }
+        public string? thumbnail { get; set; }
 
         [Column(TypeName = "decimal(3,2)")]
         public decimal rating_average { get; set; } = 0;

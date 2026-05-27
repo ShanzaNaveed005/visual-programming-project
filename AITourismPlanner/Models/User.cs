@@ -22,16 +22,17 @@ namespace AITourismPlanner.Models
         [StringLength(255)]
         public string password_hash { get; set; }
 
-        [StringLength(20)]
-        public string phone { get; set; }
-
-        public string gender { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? date_of_birth { get; set; }
 
+        [StringLength(20)]
+        public string? phone { get; set; }
+
+        public string? gender { get; set; }
+
         [StringLength(255)]
-        public string profile_image { get; set; }
+        public string? profile_image { get; set; }
 
         public int? role_id { get; set; }
 

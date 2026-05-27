@@ -1,6 +1,204 @@
-﻿namespace AITourismPlanner.Views.Trips
-{
-    public class PlanTrip
-    {
-    }
+﻿@model AITourismPlanner.ViewModels.TripPlannerViewModel
+@{
+    ViewData["Title"] = "AI Trip Planner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userId = Context.Session.GetInt32("UserId");
 }
+
+@if (!userId.HasValue)
+{
+    <div class="container py-5">
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+            <h4>Please Login First</h4>
+            <p>You need to login to use the AI Trip Planner.</p>
+            <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login Now</a>
+        </div>
+    </div>
+    return;
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-robot text-primary"></i> AI Trip Planner
+        </h1>
+        <p class="lead text-muted">Let our artificial intelligence plan your perfect journey</p>
+    </div>
+
+    <div class="row">
+        <!-- Main Form -->
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-gradient-primary text-white text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-magic fa-2x mb-2"></i>
+                    <h3 class="mb-0">Tell Us About Your Dream Trip</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="PlanTrip" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>Select Destination
+                            </label>
+                            <select asp-for="SelectedDestinationId" class="form-select form-select-lg">
+                                <option value="">-- Or let AI decide for you --</option>
+                                @if (Model.Destinations != null)
+                                {
+                                    foreach (var dest in Model.Destinations as dynamic)
+                                    {
+                                        <option value="@dest.destination_id">@dest.name</option>
+                                    }
+                                }
+                            </select>
+                            <small class="text-muted">Leave empty and AI will suggest best destination</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar-alt text-primary me-2"></i>Start Date
+                                </label>
+                                <input asp-for="StartDate" type="date" class="form-control form-control-lg" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar-check text-primary me-2"></i>End Date
+                                </label>
+                                <input asp-for="EndDate" type="date" class="form-control form-control-lg" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-money-bill-wave text-primary me-2"></i>Total Budget (PKR)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">PKR</span>
+                                    <input asp-for="Budget" type="number" class="form-control form-control-lg" placeholder="e.g., 50000" value="50000">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-users text-primary me-2"></i>Number of Travelers
+                                </label>
+                                <input asp-for="Travelers" type="number" class="form-control form-control-lg" min="1" max="20" value="2">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-heart text-primary me-2"></i>Your Interests
+                            </label>
+                            <textarea asp-for="Interests" class="form-control form-control-lg" rows="3" placeholder="e.g., adventure, mountains, historical places, beaches, food, culture..."></textarea>
+                            <small class="text-muted">AI will use these interests to recommend the perfect destination</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-robot me-2"></i> Generate AI Trip Plan
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendations Sidebar -->
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 bg-light">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">
+                        <i class="fas fa-lightbulb text-warning"></i> AI Suggestions
+                    </h4>
+                    <p class="text-muted">Based on your preferences, AI recommends:</p>
+
+                    @if (Model.Recommendations != null && Model.Recommendations.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var rec in Model.Recommendations.Take(3))
+                            {
+                                <div class="list-group-item border-0 rounded-3 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary rounded-circle p-2 me-3" style="width: 40px; height: 40px; text-align: center;">
+                                            <i class="fas fa-map-marker-alt text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">@rec.name</h6>
+                                            <small class="text-muted">PKR @rec.estimated_cost?.ToString("N0")</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-robot fa-3x text-muted mb-2"></i>
+                            <p>Fill the form to get AI recommendations</p>
+                        </div>
+                    }
+
+                    <hr class="my-4">
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>How AI works:</strong>
+                        <ul class="mt-2 mb-0 small">
+                            <li>Analyzes your budget and preferences</li>
+                            <li>Finds best matching destinations</li>
+                            <li>Generates day-wise itinerary</li>
+                            <li>Estimates daily costs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Destinations Preview -->
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4">Popular Destinations</h3>
+        <div class="row g-4">
+            @{
+                var popular = ViewBag.PopularDestinations as List<AITourismPlanner.Models.Destination>;
+                if (popular != null && popular.Any())
+                {
+                    foreach (var dest in popular.Take(3))
+                    {
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0 rounded-4">
+                                <div class="card-body text-center p-4">
+                                    <i class="fas fa-mountain-city fa-3x text-primary mb-3"></i>
+                                    <h5 class="fw-bold">@dest.name</h5>
+                                    <p class="text-muted small">@dest.city, @dest.country</p>
+                                    <a href="@Url.Action("Details", "Destinations", new { id = dest.destination_id })" class="btn btn-sm btn-outline-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+    }
+</style>

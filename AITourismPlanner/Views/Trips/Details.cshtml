@@ -1,6 +1,135 @@
-﻿namespace AITourismPlanner.Views.Trips
-{
-    public class Details
-    {
-    }
+﻿@model AITourismPlanner.Models.Trip
+@{
+    ViewData["Title"] = "Trip Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="card bg-gradient-primary text-white mb-4 border-0 rounded-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold">@Model.Destination?.name</h1>
+                    <p class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        @Model.start_date?.ToString("dd MMM yyyy") - @Model.end_date?.ToString("dd MMM yyyy")
+                    </p>
+                    <p><i class="fas fa-users me-2"></i> @Model.total_days Days Trip</p>
+                </div>
+                <div>
+                    <span class="badge bg-light text-dark fs-6 p-3">
+                        <i class="fas fa-money-bill-wave"></i> PKR @Model.total_budget?.ToString("N0")
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Itinerary Section -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h3 class="fw-bold">
+                        <i class="fas fa-list-check text-primary"></i> Your Itinerary
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.Itineraries != null && Model.Itineraries.Any())
+                    {
+                        <div class="timeline">
+                            @foreach (var itinerary in Model.Itineraries.OrderBy(i => i.day_number))
+                            {
+                                <div class="timeline-item mb-4">
+                                    <div class="d-flex">
+                                        <div class="timeline-badge bg-primary rounded-circle text-center me-3" style="min-width: 50px; height: 50px; line-height: 50px;">
+                                            <span class="text-white fw-bold">Day @itinerary.day_number</span>
+                                        </div>
+                                        <div class="timeline-content card shadow-sm border-0 rounded-3 flex-grow-1">
+                                            <div class="card-body">
+                                                <h5 class="card-title fw-bold">@itinerary.activity</h5>
+                                                <p class="card-text text-muted">
+                                                    <i class="fas fa-map-marker-alt me-2"></i> @itinerary.location
+                                                </p>
+                                                @if (!string.IsNullOrEmpty(itinerary.activity_time))
+                                                {
+                                                    <p><i class="fas fa-clock me-2"></i> @itinerary.activity_time</p>
+                                                }
+                                                @if (itinerary.estimated_cost.HasValue)
+                                                {
+                                                    <p class="text-primary fw-bold">Estimated Cost: PKR @itinerary.estimated_cost?.ToString("N0")</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-map fa-3x text-muted mb-3"></i>
+                            <p>No itinerary generated yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-info-circle text-primary"></i> Trip Summary
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><i class="fas fa-map-marker-alt text-primary"></i> Destination</td>
+                            <td class="fw-bold">@Model.Destination?.name</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-calendar text-primary"></i> Duration</td>
+                            <td class="fw-bold">@Model.total_days Days</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-money-bill text-primary"></i> Budget</td>
+                            <td class="fw-bold text-success">PKR @Model.total_budget?.ToString("N0")</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-chart-line text-primary"></i> Per Day</td>
+                            <td class="fw-bold">PKR @(Model.total_budget / Model.total_days)?.ToString("N0")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                    <h5>Need Help?</h5>
+                    <p class="small text-muted">Ask our AI chatbot for travel tips and recommendations</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Chat with AI</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .timeline-content {
+        transition: transform 0.3s ease;
+    }
+
+        .timeline-content:hover {
+            transform: translateX(5px);
+        }
+</style>

@@ -2,73 +2,115 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AITourismPlanner.Data;
 using AITourismPlanner.Models;
-using System.Diagnostics;
+using AITourismPlanner.ViewModels;
 
 namespace AITourismPlanner.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
-            var viewModel = new HomeViewModel
+            try
             {
-                PopularDestinations = await _context.destinations
-                    .Include(d => d.Category)
-                    .Where(d => d.rating_average >= 4)
-                    .Take(6)
-                    .ToListAsync(),
-                    
-                FeaturedHotels = await _context.hotels
-                    .Include(h => h.Destination)
-                    .OrderByDescending(h => h.star_rating)
-                    .Take(4)
-                    .ToListAsync(),
-                    
-                Categories = await _context.categories.ToListAsync(),
-                
-                Testimonials = await _context.reviews
-                    .Include(r => r.User)
-                    .Include(r => r.Destination)
-                    .Where(r => r.rating >= 4)
-                    .OrderByDescending(r => r.review_date)
-                    .Take(3)
-                    .ToListAsync()
-            };
-            
-            return View(viewModel);
+                // Get destinations with NULL handling using raw SQL
+                var destinations = new List<Destination>();
+                var hotels = new List<Hotel>();
+                var categories = new List<Category>();
+                var testimonials = new List<Review>();
+
+                // Fetch destinations using raw SQL to avoid NULL issues
+                var destSql = @"SELECT 
+                                    destination_id,
+                                    IFNULL(name, 'Unknown Destination') AS name,
+                                    IFNULL(description, 'No description available') AS description,
+                                    IFNULL(city, 'Pakistan') AS city,
+                                    IFNULL(country, 'Pakistan') AS country,
+                                    IFNULL(estimated_cost, 30000) AS estimated_cost,
+                                    IFNULL(rating_average, 0) AS rating_average,
+                                    IFNULL(thumbnail, '/images/default.jpg') AS thumbnail,
+                                    IFNULL(best_season, 'All Year') AS best_season,
+                                    category_id
+                                FROM destinations 
+                                LIMIT 6";
+
+                destinations = await _context.destinations
+                    .FromSqlRaw(destSql)
+                    .ToListAsync();
+
+                // Fetch hotels using raw SQL
+                var hotelSql = @"SELECT 
+                                    hotel_id,
+                                    IFNULL(hotel_name, 'Unknown Hotel') AS hotel_name,
+                                    IFNULL(star_rating, 3) AS star_rating,
+                                    IFNULL(price_per_night, 5000) AS price_per_night,
+                                    IFNULL(image, '/images/hotel-default.jpg') AS image,
+                                    IFNULL(address, 'Main City') AS address,
+                                    destination_id
+                                FROM hotels 
+                                ORDER BY star_rating DESC 
+                                LIMIT 4";
+
+                hotels = await _context.hotels
+                    .FromSqlRaw(hotelSql)
+                    .ToListAsync();
+
+                // Fetch categories
+                var catSql = @"SELECT 
+                                    category_id,
+                                    IFNULL(category_name, 'General') AS category_name
+                                FROM categories";
+
+                categories = await _context.categories
+                    .FromSqlRaw(catSql)
+                    .ToListAsync();
+
+                // Fetch reviews
+                var reviewSql = @"SELECT 
+                                    review_id,
+                                    IFNULL(rating, 4) AS rating,
+                                    IFNULL(review_text, 'Great experience!') AS review_text,
+                                    review_date,
+                                    user_id,
+                                    destination_id
+                                FROM reviews 
+                                LIMIT 3";
+
+                testimonials = await _context.reviews
+                    .FromSqlRaw(reviewSql)
+                    .ToListAsync();
+
+                var viewModel = new HomeViewModel
+                {
+                    PopularDestinations = destinations,
+                    FeaturedHotels = hotels,
+                    Categories = categories,
+                    Testimonials = testimonials
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Return empty view model on error
+                return View(new HomeViewModel
+                {
+                    PopularDestinations = new List<Destination>(),
+                    FeaturedHotels = new List<Hotel>(),
+                    Categories = new List<Category>(),
+                    Testimonials = new List<Review>()
+                });
+            }
         }
 
-        public IActionResult About()
-        {
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
-
-    public class HomeViewModel
-    {
-        public List<Destination> PopularDestinations { get; set; }
-        public List<Hotel> FeaturedHotels { get; set; }
-        public List<Category> Categories { get; set; }
-        public List<Review> Testimonials { get; set; }
+        public IActionResult About() => View();
+        public IActionResult Contact() => View();
+        public IActionResult Privacy() => View();
     }
 }

@@ -19,77 +19,77 @@ namespace AITourismPlanner.Controllers
         {
             try
             {
-                // Get destinations with NULL handling using raw SQL
-                var destinations = new List<Destination>();
-                var hotels = new List<Hotel>();
-                var categories = new List<Category>();
-                var testimonials = new List<Review>();
-
-                // Fetch destinations using raw SQL to avoid NULL issues
-                var destSql = @"SELECT 
-                                    destination_id,
-                                    IFNULL(name, 'Unknown Destination') AS name,
-                                    IFNULL(description, 'No description available') AS description,
-                                    IFNULL(city, 'Pakistan') AS city,
-                                    IFNULL(country, 'Pakistan') AS country,
-                                    IFNULL(estimated_cost, 30000) AS estimated_cost,
-                                    IFNULL(rating_average, 0) AS rating_average,
-                                    IFNULL(thumbnail, '/images/default.jpg') AS thumbnail,
-                                    IFNULL(best_season, 'All Year') AS best_season,
-                                    category_id
-                                FROM destinations 
-                                LIMIT 6";
-
-                destinations = await _context.destinations
-                    .FromSqlRaw(destSql)
+                // =========================================================
+                // Get Popular Destinations
+                // =========================================================
+                var popularDestinations = await _context.destinations
+                    .OrderByDescending(d => d.rating_average)
+                    .Take(6)
+                    .Select(d => new Destination
+                    {
+                        destination_id = d.destination_id,
+                        name = d.name == null ? "Unknown Destination" : d.name,
+                        description = d.description == null ? "No description available" : d.description,
+                        city = d.city == null ? "Pakistan" : d.city,
+                        country = d.country == null ? "Pakistan" : d.country,
+                        estimated_cost = d.estimated_cost == null ? 30000m : d.estimated_cost,
+                        rating_average = d.rating_average == null ? 0m : d.rating_average,
+                        thumbnail = d.thumbnail == null ? "/images/default-destination.jpg" : d.thumbnail,
+                        best_season = d.best_season == null ? "All Year" : d.best_season,
+                        category_id = d.category_id
+                    })
                     .ToListAsync();
 
-                // Fetch hotels using raw SQL
-                var hotelSql = @"SELECT 
-                                    hotel_id,
-                                    IFNULL(hotel_name, 'Unknown Hotel') AS hotel_name,
-                                    IFNULL(star_rating, 3) AS star_rating,
-                                    IFNULL(price_per_night, 5000) AS price_per_night,
-                                    IFNULL(image, '/images/hotel-default.jpg') AS image,
-                                    IFNULL(address, 'Main City') AS address,
-                                    destination_id
-                                FROM hotels 
-                                ORDER BY star_rating DESC 
-                                LIMIT 4";
-
-                hotels = await _context.hotels
-                    .FromSqlRaw(hotelSql)
+                // =========================================================
+                // Get Featured Hotels
+                // =========================================================
+                var featuredHotels = await _context.hotels
+                    .OrderByDescending(h => h.star_rating)
+                    .Take(4)
+                    .Select(h => new Hotel
+                    {
+                        hotel_id = h.hotel_id,
+                        hotel_name = h.hotel_name == null ? "Unknown Hotel" : h.hotel_name,
+                        star_rating = h.star_rating == null ? 3m : h.star_rating,
+                        price_per_night = h.price_per_night == null ? 5000m : h.price_per_night,
+                        image = h.image == null ? "/images/hotel-default.jpg" : h.image,
+                        address = h.address == null ? "Main City" : h.address,
+                        destination_id = h.destination_id
+                    })
                     .ToListAsync();
 
-                // Fetch categories
-                var catSql = @"SELECT 
-                                    category_id,
-                                    IFNULL(category_name, 'General') AS category_name
-                                FROM categories";
-
-                categories = await _context.categories
-                    .FromSqlRaw(catSql)
+                // =========================================================
+                // Get Categories
+                // =========================================================
+                var categories = await _context.categories
+                    .Select(c => new Category
+                    {
+                        category_id = c.category_id,
+                        category_name = c.category_name == null ? "General" : c.category_name
+                    })
                     .ToListAsync();
 
-                // Fetch reviews
-                var reviewSql = @"SELECT 
-                                    review_id,
-                                    IFNULL(rating, 4) AS rating,
-                                    IFNULL(review_text, 'Great experience!') AS review_text,
-                                    review_date,
-                                    user_id,
-                                    destination_id
-                                FROM reviews 
-                                LIMIT 3";
-
-                testimonials = await _context.reviews
-                    .FromSqlRaw(reviewSql)
+                // =========================================================
+                // Get Testimonials
+                // =========================================================
+                var testimonials = await _context.reviews
+                    .OrderByDescending(r => r.review_date)
+                    .Take(3)
+                    .Select(r => new Review
+                    {
+                        review_id = r.review_id,
+                        rating = r.rating == null ? 4 : r.rating,
+                        review_text = r.review_text == null ? "Great experience!" : r.review_text,
+                        review_date = r.review_date == null ? DateTime.Now : r.review_date,
+                        user_id = r.user_id,
+                        destination_id = r.destination_id
+                    })
                     .ToListAsync();
 
                 var viewModel = new HomeViewModel
                 {
-                    PopularDestinations = destinations,
-                    FeaturedHotels = hotels,
+                    PopularDestinations = popularDestinations,
+                    FeaturedHotels = featuredHotels,
                     Categories = categories,
                     Testimonials = testimonials
                 };
@@ -98,7 +98,6 @@ namespace AITourismPlanner.Controllers
             }
             catch (Exception ex)
             {
-                // Return empty view model on error
                 return View(new HomeViewModel
                 {
                     PopularDestinations = new List<Destination>(),
@@ -109,8 +108,19 @@ namespace AITourismPlanner.Controllers
             }
         }
 
-        public IActionResult About() => View();
-        public IActionResult Contact() => View();
-        public IActionResult Privacy() => View();
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }

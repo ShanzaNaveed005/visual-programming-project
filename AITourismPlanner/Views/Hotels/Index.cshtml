@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Hotels";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-hotel text-primary"></i> Find Your Perfect Stay
+        </h1>
+        <p class="lead">Discover the best hotels across Pakistan</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+        <div class="card-body p-4">
+            <form method="get" action="@Url.Action("Search", "HotelBooking")" class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold">Destination</label>
+                    <input type="text" name="city" class="form-control form-control-lg" placeholder="Enter city (e.g., Murree, Hunza)">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check In</label>
+                    <input type="date" name="checkIn" class="form-control form-control-lg" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check Out</label>
+                    <input type="date" name="checkOut" class="form-control form-control-lg" value="@DateTime.Now.AddDays(3).ToString("yyyy-MM-dd")">
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label fw-bold">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popular Hotels Message -->
+    <div class="text-center py-5">
+        <i class="fas fa-building fa-4x text-muted mb-3"></i>
+        <h3>Ready to find your perfect stay?</h3>
+        <p>Use the search form above to find hotels in your favorite destinations.</p>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-tag fa-2x text-primary mb-2"></i>
+                        <h5>Best Price Guarantee</h5>
+                        <small class="text-muted">We offer competitive rates</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-headset fa-2x text-primary mb-2"></i>
+                        <h5>24/7 Support</h5>
+                        <small class="text-muted">We're here to help</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-2x text-primary mb-2"></i>
+                        <h5>Secure Booking</h5>
+                        <small class="text-muted">Your payments are safe</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -479,5 +479,51 @@ namespace AITourismPlanner.Controllers
             _context.admin_logs.Add(log);
             await _context.SaveChangesAsync();
         }
+        // =========================================================
+        // WISHLIST / FAVORITES
+        // =========================================================
+        [HttpGet]
+        public async Task<IActionResult> Wishlist()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var wishlist = await _context.favorites
+                .Include(f => f.Destination)
+                .Where(f => f.user_id == userId)
+                .ToListAsync();
+
+            return View(wishlist);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleFavorite(int destinationId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+                return Json(new { success = false, message = "Please login first" });
+
+            var existing = await _context.favorites
+                .FirstOrDefaultAsync(f => f.user_id == userId && f.destination_id == destinationId);
+
+            if (existing != null)
+            {
+                _context.favorites.Remove(existing);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, isFavorite = false, message = "Removed from wishlist" });
+            }
+            else
+            {
+                var favorite = new Favorite
+                {
+                    user_id = userId.Value,
+                    destination_id = destinationId
+                };
+                _context.favorites.Add(favorite);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, isFavorite = true, message = "Added to wishlist" });
+            }
+        }
     }
 }

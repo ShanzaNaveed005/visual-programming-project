@@ -1,0 +1,122 @@
+﻿@model List<AITourismPlanner.Services.RealHotel>
+@{
+    ViewData["Title"] = "Real Hotels - Live Data";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-globe text-primary"></i> Real Hotels
+        </h1>
+        <p class="lead">Live data from Booking.com via RapidAPI</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+        <div class="card-body p-4">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">City</label>
+                    <select name="city" class="form-select">
+                        <option value="Islamabad" selected="@(ViewBag.City == "Islamabad")">Islamabad</option>
+                        <option value="Lahore" selected="@(ViewBag.City == "Lahore")">Lahore</option>
+                        <option value="Karachi" selected="@(ViewBag.City == "Karachi")">Karachi</option>
+                        <option value="Murree" selected="@(ViewBag.City == "Murree")">Murree</option>
+                        <option value="Hunza" selected="@(ViewBag.City == "Hunza")">Hunza</option>
+                        <option value="Skardu" selected="@(ViewBag.City == "Skardu")">Skardu</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check In</label>
+                    <input type="date" name="checkIn" class="form-control" value="@ViewBag.CheckIn">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check Out</label>
+                    <input type="date" name="checkOut" class="form-control" value="@ViewBag.CheckOut">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Guests</label>
+                    <input type="number" name="guests" class="form-control" value="@ViewBag.Guests" min="1" max="10">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Search Real Hotels
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> Showing <strong>@Model.Count</strong> real hotels from Booking.com
+        </div>
+
+        <div class="row g-4">
+            @foreach (var hotel in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4">
+                        <img src="@(hotel.ImageUrl ?? "/images/hotel-default.jpg")" 
+                             class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;" 
+                             alt="@hotel.Name">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@hotel.Name</h5>
+                            <p class="text-muted small">
+                                <i class="fas fa-map-marker-alt text-primary"></i> @hotel.Address
+                            </p>
+                            @if (hotel.Rating.HasValue)
+                            {
+                                <div class="mb-2">
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-star"></i> @hotel.Rating.Value.ToString("0.0")
+                                    </span>
+                                    @if (hotel.ReviewCount.HasValue)
+                                    {
+                                        <span class="text-muted ms-2">(@hotel.ReviewCount.Value reviews)</span>
+                                    }
+                                </div>
+                            }
+                            @if (hotel.PricePerNight.HasValue)
+                            {
+                                <p class="text-primary fw-bold fs-4 mt-2">
+                                    PKR @hotel.PricePerNight.Value.ToString("N0")
+                                    <span class="text-muted fs-6">/night</span>
+                                </p>
+                            }
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <a href="@Url.Action("Details", "RealHotels", new { id = hotel.Id })" class="btn btn-primary w-100">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+            <h4>No hotels found</h4>
+            <p>Try a different city or check your API key</p>
+        </div>
+    }
+</div>
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    .card {
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>

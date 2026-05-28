@@ -6,10 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<IRealHotelService, RealHotelService>();
+builder.Services.AddHttpClient();
 // =========================================================
 // DATABASE CONNECTION FOR .NET 10
-// =========================================================
+// =========================================================a
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // For .NET 10 - Using Official MySQL Package

@@ -8,6 +8,7 @@ using AITourismPlanner.ViewModels;
 namespace AITourismPlanner.Controllers
 {
     // Admin Authorization Filter
+
     public class AdminAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)

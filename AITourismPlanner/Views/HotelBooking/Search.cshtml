@@ -1,0 +1,84 @@
+﻿@model List<AITourismPlanner.Models.Hotel>
+@{
+    ViewData["Title"] = "Search Hotels";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <!-- Search Form -->
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+        <div class="card-body p-4">
+            <h3 class="fw-bold mb-4">
+                <i class="fas fa-search text-primary"></i> Find Hotels
+            </h3>
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">City / Destination</label>
+                    <input type="text" name="city" class="form-control" value="@ViewBag.City" placeholder="e.g., Murree, Hunza">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check In</label>
+                    <input type="date" name="checkIn" class="form-control" value="@ViewBag.CheckIn?.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Check Out</label>
+                    <input type="date" name="checkOut" class="form-control" value="@ViewBag.CheckOut?.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Guests</label>
+                    <input type="number" name="guests" class="form-control" value="@ViewBag.Guests" min="1" max="10">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-search me-2"></i> Search Hotels
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var hotel in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4">
+                        <img src="@(hotel.image ?? "/images/hotel-default.jpg")" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold">@hotel.hotel_name</h5>
+                            <p class="text-muted small">
+                                <i class="fas fa-map-marker-alt me-1"></i> @hotel.Destination?.name, @hotel.Destination?.city
+                            </p>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= (hotel.star_rating ?? 0); i++)
+                                {
+                                    <i class="fas fa-star text-warning small"></i>
+                                }
+                            </div>
+                            <p class="card-text small">@(hotel.description?.Length > 100 ? hotel.description.Substring(0, 100) + "..." : hotel.description)</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="text-primary fw-bold fs-5">PKR @hotel.price_per_night?.ToString("N0")<span class="text-muted fw-normal">/night</span></span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-4">
+                            <a href="@Url.Action("Details", "HotelBooking", new { id = hotel.hotel_id, checkIn = ViewBag.CheckIn, checkOut = ViewBag.CheckOut, guests = ViewBag.Guests })"
+                                   class="btn btn-primary w-100">
+                                View Rooms <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-hotel fa-4x text-muted mb-3"></i>
+            <h3>No hotels found</h3>
+            <p>Try searching with different criteria</p>
+        </div>
+    }
+</div>

@@ -108,6 +108,7 @@ namespace AITourismPlanner.Controllers
                 ModelState.AddModelError("", "Invalid email or password.");
             }
 
+
             return View(model);
         }
 

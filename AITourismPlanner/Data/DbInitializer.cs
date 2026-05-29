@@ -83,7 +83,7 @@ namespace AITourismPlanner.Data
             await context.hotels.AddRangeAsync(hotels);
             await context.SaveChangesAsync();
 
-            // ❌ TRANSPORT SEEDING REMOVED - Now using API/Mock Service
+
 
             // Seed Hotel Rooms
             var hotelRooms = new HotelRoom[]

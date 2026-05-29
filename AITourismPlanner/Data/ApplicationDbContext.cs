@@ -33,7 +33,7 @@ namespace AITourismPlanner.Data
         public DbSet<ChatbotHistory> chatbot_history { get; set; }  // Only ONE time
         public DbSet<EmergencyService> emergency_services { get; set; }
         public DbSet<AdminLog> admin_logs { get; set; }
-
+        public DbSet<ApiDestination> api_destinations { get; set; }
         // =========================================================
         // MODEL CONFIGURATION
         // =========================================================

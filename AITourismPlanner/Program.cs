@@ -38,7 +38,8 @@ builder.Services.AddHttpContextAccessor();
 
 // Add HTTP Client for APIs
 builder.Services.AddHttpClient();
-
+builder.Services.AddScoped<IGeoDbDestinationService, GeoDbDestinationService>();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

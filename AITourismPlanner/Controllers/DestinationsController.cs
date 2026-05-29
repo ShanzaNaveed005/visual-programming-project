@@ -1,162 +1,72 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AITourismPlanner.Data;
+using AITourismPlanner.Services;
 using AITourismPlanner.Models;
-using AITourismPlanner.ViewModels;
 
 namespace AITourismPlanner.Controllers
 {
-    public class DestinationsController : Controller
+    public class DestinationController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IGeoDbService _geoDbService;
+        private readonly IWeatherService _weatherService;
+        private readonly IHotelService _hotelService;
 
-        public DestinationsController(ApplicationDbContext context)
+        // Constructor - Services inject karo
+        public DestinationController(
+            IGeoDbService geoDbService,
+            IWeatherService weatherService,
+            IHotelService hotelService)
         {
-            _context = context;
+            _geoDbService = geoDbService;
+            _weatherService = weatherService;
+            _hotelService = hotelService;
         }
 
-        // =========================================================
-        // INDEX - List all destinations
-        // =========================================================
-        public async Task<IActionResult> Index(string searchTerm, string category, decimal? minBudget, decimal? maxBudget)
-        {
-            var query = _context.destinations
-                .Include(d => d.Category)
-                .AsQueryable();
-
-            // Apply filters
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(d => d.name.Contains(searchTerm) ||
-                                         (d.description != null && d.description.Contains(searchTerm)));
-            }
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                query = query.Where(d => d.Category != null && d.Category.category_name == category);
-            }
-
-            if (minBudget.HasValue)
-            {
-                query = query.Where(d => d.estimated_cost >= minBudget.Value);
-            }
-
-            if (maxBudget.HasValue)
-            {
-                query = query.Where(d => d.estimated_cost <= maxBudget.Value);
-            }
-
-            var destinations = await query
-                .OrderByDescending(d => d.rating_average)
-                .ToListAsync();
-
-            var categories = await _context.categories.ToListAsync();
-
-            ViewBag.Categories = categories;
-            ViewBag.SearchTerm = searchTerm;
-            ViewBag.SelectedCategory = category;
-
-            return View(destinations);
-        }
-
-        // =========================================================
-        // DETAILS - View single destination
-        // =========================================================
-        public async Task<IActionResult> Details(int id)
-        {
-            var destination = await _context.destinations
-                .Include(d => d.Category)
-                .Include(d => d.Hotels)
-                .Include(d => d.Reviews)
-                    .ThenInclude(r => r.User)
-                .FirstOrDefaultAsync(d => d.destination_id == id);
-
-            if (destination == null)
-            {
-                return NotFound();
-            }
-
-            // Get weather info
-            var weather = await _context.weather
-                .FirstOrDefaultAsync(w => w.destination_id == id);
-
-            // Get nearby emergency services
-            var emergencyServices = await _context.emergency_services
-                .Where(e => e.destination_id == id)
-                .ToListAsync();
-
-            var viewModel = new DestinationDetailViewModel
-            {
-                Destination = destination,
-                Weather = weather,
-                EmergencyServices = emergencyServices,
-                SimilarDestinations = await _context.destinations
-                    .Where(d => d.category_id == destination.category_id && d.destination_id != id)
-                    .Take(3)
-                    .ToListAsync()
-            };
-
-            return View(viewModel);
-        }
-
-        // =========================================================
-        // SEARCH API - For AJAX calls
-        // =========================================================
         [HttpGet]
-        public async Task<IActionResult> Search(string q)
+        public async Task<IActionResult> ApiSearch(string q)
         {
-            if (string.IsNullOrEmpty(q))
-            {
+            if (string.IsNullOrEmpty(q) || q.Length < 2)
                 return Json(new List<object>());
-            }
 
-            var results = await _context.destinations
-                .Where(d => d.name.Contains(q))
-                .Take(10)
-                .Select(d => new { d.destination_id, d.name, d.city, d.thumbnail })
-                .ToListAsync();
+            var cities = await _geoDbService.SearchCitiesAsync(q, 10);
+
+            var results = cities.Select(c => new
+            {
+                c.Id,
+                c.Name,
+                c.Country,
+                c.CountryCode,
+                c.Population,
+                ImageUrl = c.ImageUrl,
+                DetailsUrl = Url.Action("ApiDestinationDetail", new { id = c.Id })
+            });
 
             return Json(results);
         }
 
-        // =========================================================
-        // ADD REVIEW
-        // =========================================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddReview(int destinationId, int rating, string comment)
+        [HttpGet]
+        public async Task<IActionResult> ApiDestinationDetail(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
+            var city = await _geoDbService.GetCityDetailsAsync(id);
+
+            if (city == null)
+                return NotFound();
+
+            // Get weather for this city
+            var weather = await _weatherService.GetWeatherAsync(city.Name);
+
+            // Get nearby hotels
+            var hotels = new List<HotelApiModel>();
+            if (city.Latitude.HasValue && city.Longitude.HasValue)
             {
-                return Json(new { success = false, message = "Please login to review" });
+                hotels = await _hotelService.GetNearbyHotelsByCoordsAsync(
+                    city.Latitude.Value, city.Longitude.Value);
             }
 
-            var review = new Review
-            {
-                destination_id = destinationId,
-                user_id = userId.Value,
-                rating = rating,
-                review_text = comment,
-                review_date = DateTime.Now
-            };
+            ViewBag.City = city;
+            ViewBag.Weather = weather;
+            ViewBag.Hotels = hotels;
 
-            _context.reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            // Update destination average rating
-            var avgRating = await _context.reviews
-                .Where(r => r.destination_id == destinationId)
-                .AverageAsync(r => r.rating ?? 0);
-
-            var destination = await _context.destinations.FindAsync(destinationId);
-            if (destination != null)
-            {
-                destination.rating_average = (decimal)avgRating;
-                await _context.SaveChangesAsync();
-            }
-
-            return Json(new { success = true, message = "Review added successfully!" });
+            return View();
         }
     }
 }

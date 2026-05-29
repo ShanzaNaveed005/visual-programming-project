@@ -1,47 +1,40 @@
-﻿@model List<AITourismPlanner.Services.RealHotel>
+﻿@model List<AITourismPlanner.Controllers.HotelResult>
 @{
-    ViewData["Title"] = "Real Hotels - Live Data";
+    ViewData["Title"] = "Search Hotels";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container py-4">
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">
-            <i class="fas fa-globe text-primary"></i> Real Hotels
-        </h1>
-        <p class="lead">Live data from Booking.com via RapidAPI</p>
-    </div>
-
     <!-- Search Form -->
     <div class="card shadow-lg border-0 rounded-4 mb-5">
         <div class="card-body p-4">
+            <h3 class="fw-bold mb-4">
+                <i class="fas fa-search text-primary"></i> Find Hotels
+            </h3>
             <form method="get" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label fw-bold">City</label>
-                    <select name="city" class="form-select">
-                        <option value="Islamabad" selected="@(ViewBag.City == "Islamabad")">Islamabad</option>
-                        <option value="Lahore" selected="@(ViewBag.City == "Lahore")">Lahore</option>
-                        <option value="Karachi" selected="@(ViewBag.City == "Karachi")">Karachi</option>
-                        <option value="Murree" selected="@(ViewBag.City == "Murree")">Murree</option>
-                        <option value="Hunza" selected="@(ViewBag.City == "Hunza")">Hunza</option>
-                        <option value="Skardu" selected="@(ViewBag.City == "Skardu")">Skardu</option>
-                    </select>
+                    <input type="text" name="city" class="form-control form-control-lg"
+                           value="@ViewBag.City" placeholder="e.g., Islamabad, Lahore">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label fw-bold">Check In</label>
-                    <input type="date" name="checkIn" class="form-control" value="@ViewBag.CheckIn">
+                    <input type="date" name="checkIn" class="form-control form-control-lg"
+                           value="@ViewBag.CheckIn">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label fw-bold">Check Out</label>
-                    <input type="date" name="checkOut" class="form-control" value="@ViewBag.CheckOut">
+                    <input type="date" name="checkOut" class="form-control form-control-lg"
+                           value="@ViewBag.CheckOut">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label fw-bold">Guests</label>
-                    <input type="number" name="guests" class="form-control" value="@ViewBag.Guests" min="1" max="10">
+                    <input type="number" name="guests" class="form-control form-control-lg"
+                           value="@ViewBag.Guests" min="1" max="10">
                 </div>
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> Search Real Hotels
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-search me-2"></i> Search Hotels
                     </button>
                 </div>
             </form>
@@ -51,47 +44,54 @@
     <!-- Results -->
     @if (Model != null && Model.Any())
     {
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i> Showing <strong>@Model.Count</strong> real hotels from Booking.com
-        </div>
-
+        <h4 class="mb-4">Found <strong>@Model.Count</strong> hotels</h4>
         <div class="row g-4">
             @foreach (var hotel in Model)
             {
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 shadow-sm border-0 rounded-4">
-                        <img src="@(hotel.ImageUrl ?? "/images/hotel-default.jpg")" 
-                             class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;" 
-                             alt="@hotel.Name">
-                        <div class="card-body">
+                        @if (!string.IsNullOrEmpty(hotel.ImageUrl))
+                        {
+                            <img src="@hotel.ImageUrl" class="card-img-top rounded-top-4"
+                                 style="height: 200px; object-fit: cover;" alt="@hotel.Name">
+                        }
+                        else
+                        {
+                            <div class="rounded-top-4" style="height: 200px;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-hotel fa-4x text-white"></i>
+                            </div>
+                        }
+                        <div class="card-body p-4">
                             <h5 class="card-title fw-bold">@hotel.Name</h5>
                             <p class="text-muted small">
-                                <i class="fas fa-map-marker-alt text-primary"></i> @hotel.Address
+                                <i class="fas fa-map-marker-alt me-1"></i> @hotel.Address
                             </p>
                             @if (hotel.Rating.HasValue)
                             {
-                                <div class="mb-2">
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="fas fa-star"></i> @hotel.Rating.Value.ToString("0.0")
-                                    </span>
+                                <p>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <strong>@hotel.Rating?.ToString("0.0")</strong>
                                     @if (hotel.ReviewCount.HasValue)
                                     {
-                                        <span class="text-muted ms-2">(@hotel.ReviewCount.Value reviews)</span>
+                                        <span class="text-muted small">
+                                            (@hotel.ReviewCount reviews)
+                                        </span>
                                     }
-                                </div>
+                                </p>
                             }
                             @if (hotel.PricePerNight.HasValue)
                             {
-                                <p class="text-primary fw-bold fs-4 mt-2">
-                                    PKR @hotel.PricePerNight.Value.ToString("N0")
-                                    <span class="text-muted fs-6">/night</span>
+                                <p class="text-primary fw-bold fs-5">
+                                    PKR @hotel.PricePerNight?.ToString("N0")
+                                    <span class="text-muted fw-normal fs-6">/night</span>
                                 </p>
                             }
-                        </div>
-                        <div class="card-footer bg-transparent border-0 pb-3">
-                            <a href="@Url.Action("Details", "RealHotels", new { id = hotel.Id })" class="btn btn-primary w-100">
-                                View Details <i class="fas fa-arrow-right"></i>
-                            </a>
+                            else
+                            {
+                                <p class="text-muted">Price not available</p>
+                            }
                         </div>
                     </div>
                 </div>
@@ -100,10 +100,10 @@
     }
     else
     {
-        <div class="alert alert-warning text-center">
-            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-            <h4>No hotels found</h4>
-            <p>Try a different city or check your API key</p>
+        <div class="text-center py-5">
+            <i class="fas fa-hotel fa-4x text-muted mb-3"></i>
+            <h3>No hotels found</h3>
+            <p class="text-muted">Try a different city or dates</p>
         </div>
     }
 </div>
@@ -113,10 +113,17 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
     }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
     .card {
         transition: transform 0.3s ease;
     }
-    .card:hover {
-        transform: translateY(-5px);
-    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
 </style>

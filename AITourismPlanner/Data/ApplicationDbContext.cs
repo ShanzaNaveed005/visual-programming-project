@@ -22,10 +22,7 @@ namespace AITourismPlanner.Data
         public DbSet<Hotel> hotels { get; set; }
         public DbSet<HotelRoom> hotel_rooms { get; set; }
         public DbSet<HotelBooking> hotel_bookings { get; set; }
-<<<<<<< HEAD
-=======
-       
->>>>>>> da16562d68a96ea005118f93913ca6794ed96c43
+
         public DbSet<Trip> trips { get; set; }
         public DbSet<Itinerary> itineraries { get; set; }
         public DbSet<AIRecommendation> ai_recommendations { get; set; }
@@ -37,7 +34,7 @@ namespace AITourismPlanner.Data
         public DbSet<ChatbotHistory> chatbot_history { get; set; }  // Only ONE time
         public DbSet<EmergencyService> emergency_services { get; set; }
         public DbSet<AdminLog> admin_logs { get; set; }
-        public DbSet<ApiDestination> api_destinations { get; set; }
+
         // =========================================================
         // MODEL CONFIGURATION
         // =========================================================

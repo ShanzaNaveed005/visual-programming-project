@@ -22,8 +22,6 @@ namespace AITourismPlanner.Data
         public DbSet<Hotel> hotels { get; set; }
         public DbSet<HotelRoom> hotel_rooms { get; set; }
         public DbSet<HotelBooking> hotel_bookings { get; set; }
-        public DbSet<Transport> transports { get; set; }
-        public DbSet<TransportBooking> transport_bookings { get; set; }
         public DbSet<Trip> trips { get; set; }
         public DbSet<Itinerary> itineraries { get; set; }
         public DbSet<AIRecommendation> ai_recommendations { get; set; }
@@ -72,15 +70,6 @@ namespace AITourismPlanner.Data
                 .Property(hb => hb.total_amount)
                 .HasPrecision(10, 2);
 
-            // Transport
-            modelBuilder.Entity<Transport>().ToTable("transports")
-                .Property(t => t.fare)
-                .HasPrecision(10, 2);
-
-            // TransportBooking
-            modelBuilder.Entity<TransportBooking>().ToTable("transport_bookings")
-                .Property(tb => tb.total_price)
-                .HasPrecision(10, 2);
 
             // Trip
             modelBuilder.Entity<Trip>()
@@ -179,19 +168,7 @@ namespace AITourismPlanner.Data
                 .HasForeignKey(hb => hb.room_id)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // TransportBooking -> User (One to Many)
-            modelBuilder.Entity<TransportBooking>()
-                .HasOne(tb => tb.User)
-                .WithMany(u => u.TransportBookings)
-                .HasForeignKey(tb => tb.user_id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // TransportBooking -> Transport (One to Many)
-            modelBuilder.Entity<TransportBooking>()
-                .HasOne(tb => tb.Transport)
-                .WithMany(t => t.TransportBookings)
-                .HasForeignKey(tb => tb.transport_id)
-                .OnDelete(DeleteBehavior.Cascade);
+         
 
             // Itinerary -> Trip (One to Many)
             modelBuilder.Entity<Itinerary>()

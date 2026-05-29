@@ -46,7 +46,7 @@ namespace AITourismPlanner.Models
 
         public virtual UserPreference UserPreference { get; set; }
         public virtual ICollection<HotelBooking> HotelBookings { get; set; }
-        public virtual ICollection<TransportBooking> TransportBookings { get; set; }
+       
         public virtual ICollection<Trip> Trips { get; set; }
         public virtual ICollection<AIRecommendation> AIRecommendations { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }

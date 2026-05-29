@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRealHotelService, RealHotelService>();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 // =========================================================
 // DATABASE CONNECTION FOR .NET 10
 // =========================================================a

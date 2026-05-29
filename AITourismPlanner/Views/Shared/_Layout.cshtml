@@ -138,7 +138,14 @@
                         </a>
                     </li>
                     
-                    <!-- REAL HOTELS LINK - OPTION 1: Separate Menu Item -->
+                    <!-- Weather Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Weather")">
+                            <i class="fas fa-cloud-sun"></i> Weather
+                        </a>
+                    </li>
+                    
+                    <!-- Real Hotels Link -->
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Search", "RealHotels")">
                             <i class="fas fa-globe"></i> Real Hotels
@@ -227,6 +234,7 @@
                         <li><a href="@Url.Action("Index", "Home")">Home</a></li>
                         <li><a href="@Url.Action("Index", "Destinations")">Destinations</a></li>
                         <li><a href="@Url.Action("PlanTrip", "Trips")">AI Planner</a></li>
+                        <li><a href="@Url.Action("Index", "Weather")">Weather</a></li>
                         <li><a href="@Url.Action("Search", "RealHotels")">Real Hotels</a></li>
                         <li><a href="@Url.Action("About", "Home")">About Us</a></li>
                     </ul>

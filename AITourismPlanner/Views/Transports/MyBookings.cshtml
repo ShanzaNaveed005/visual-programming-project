@@ -1,0 +1,75 @@
+﻿@model List<AITourismPlanner.Models.TransportBooking>
+@{
+    ViewData["Title"] = "My Transport Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <h1 class="display-5 fw-bold mb-4">
+        <i class="fas fa-ticket-alt text-primary"></i> My Transport Bookings
+    </h1>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var booking in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-header bg-white border-0 pt-4">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="fw-bold">@booking.Transport?.company_name</h5>
+                                <span class="badge @(booking.status == "Confirmed" ? "bg-success" : booking.status == "Pending" ? "bg-warning" : "bg-danger")">
+                                    @booking.status
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p><i class="fas fa-map-marker-alt"></i> @booking.Transport?.departure_city → @booking.Transport?.arrival_city</p>
+                            <p><i class="fas fa-calendar"></i> @booking.journey_date.ToString("dd MMM yyyy")</p>
+                            <p><i class="fas fa-clock"></i> @booking.Transport?.departure_time.ToString(@"hh\:mm tt")</p>
+                            <p><i class="fas fa-chair"></i> @booking.seats_booked Seat(s)</p>
+                            <p class="text-primary fw-bold">PKR @booking.total_price.ToString("N0")</p>
+                            <p><small class="text-muted">Booking Ref: @booking.booking_reference</small></p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-4">
+                            <a href="@Url.Action("BookingDetails", "Transport", new { id = booking.booking_id })" class="btn btn-outline-primary me-2">View Details</a>
+                            @if (booking.status == "Confirmed" && booking.journey_date >= DateTime.Now.Date)
+                            {
+                                <button onclick="cancelBooking(@booking.booking_id)" class="btn btn-outline-danger">Cancel Booking</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+            <h3>No bookings yet</h3>
+            <a href="@Url.Action("Search", "Transport")" class="btn btn-primary">Book Transport</a>
+        </div>
+    }
+</div>
+
+<script>
+    function cancelBooking(bookingId) {
+        if (confirm('Are you sure you want to cancel this booking?')) {
+            $.ajax({
+                url: '@Url.Action("CancelBooking", "Transport")',
+                type: 'POST',
+                data: { id: bookingId },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    }
+</script>

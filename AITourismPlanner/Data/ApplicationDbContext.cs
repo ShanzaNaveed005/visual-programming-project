@@ -73,12 +73,12 @@ namespace AITourismPlanner.Data
                 .HasPrecision(10, 2);
 
             // Transport
-            modelBuilder.Entity<Transport>()
+            modelBuilder.Entity<Transport>().ToTable("transports")
                 .Property(t => t.fare)
                 .HasPrecision(10, 2);
 
             // TransportBooking
-            modelBuilder.Entity<TransportBooking>()
+            modelBuilder.Entity<TransportBooking>().ToTable("transport_bookings")
                 .Property(tb => tb.total_price)
                 .HasPrecision(10, 2);
 

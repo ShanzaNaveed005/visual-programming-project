@@ -1,0 +1,148 @@
+﻿@model List<AITourismPlanner.Models.Transport>
+@{
+    ViewData["Title"] = "Search Transport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-bus text-primary"></i> Transport Services
+        </h1>
+        <p class="lead">Book buses across Pakistan</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+        <div class="card-body p-4">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">From</label>
+                    <input type="text" name="from" class="form-control form-control-lg" value="@ViewBag.From" placeholder="Departure City">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">To</label>
+                    <input type="text" name="to" class="form-control form-control-lg" value="@ViewBag.To" placeholder="Arrival City">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Journey Date</label>
+                    <input type="date" name="date" class="form-control form-control-lg" value="@(((DateTime)ViewBag.Date).ToString("yyyy-MM-dd"))">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Transport Type</label>
+                    <select name="type" class="form-select form-select-lg">
+                        <option value="All" selected="@(ViewBag.Type?.ToString() == "All")">All</option>
+                        <option value="Bus" selected="@(ViewBag.Type?.ToString() == "Bus")">Bus</option>
+                        <option value="Train" selected="@(ViewBag.Type?.ToString() == "Train")">Train</option>
+                        <option value="Flight" selected="@(ViewBag.Type?.ToString() == "Flight")">Flight</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label fw-bold">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> Found <strong>@Model.Count</strong> transport options
+        </div>
+
+        <div class="row g-4">
+            @foreach (var transport in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    @if (transport.transport_type == "Bus")
+                                    {
+                                        <i class="fas fa-bus fa-3x text-primary"></i>
+                                    }
+                                    else if (transport.transport_type == "Train")
+                                    {
+                                        <i class="fas fa-train fa-3x text-primary"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-plane fa-3x text-primary"></i>
+                                    }
+                                </div>
+                                <div class="col-9">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="fw-bold">@transport.company_name</h5>
+                                        <span class="badge bg-primary">@transport.transport_type</span>
+                                    </div>
+                                    <p class="text-muted small">
+                                        <i class="fas fa-map-marker-alt"></i> @transport.departure_city → @transport.arrival_city
+                                    </p>
+                                    <div class="row text-center mt-2">
+                                        <div class="col-4">
+                                            <small class="text-muted">Departure</small>
+                                            <p class="fw-bold mb-0">@transport.departure_time.ToString(@"hh\:mm")</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="text-muted">Duration</small>
+                                            <p class="fw-bold mb-0">@transport.duration</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="text-muted">Arrival</small>
+                                            <p class="fw-bold mb-0">@transport.arrival_time.ToString(@"hh\:mm")</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div>
+                                            <span class="text-primary fw-bold fs-4">PKR @transport.fare.ToString("N0")</span>
+                                            <span class="text-muted">/person</span>
+                                        </div>
+                                        @if (transport.available_seats > 0)
+                                        {
+                                            <span class="badge bg-success">@transport.available_seats seats left</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Sold Out</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-4 px-4">
+                            <a href="@Url.Action("Details", "Transport", new { id = transport.transport_id, date = ViewBag.Date })" class="btn btn-primary w-100">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-bus fa-4x text-muted mb-3"></i>
+            <h3>No transport found</h3>
+            <p>Try searching with different cities or dates</p>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+</style>

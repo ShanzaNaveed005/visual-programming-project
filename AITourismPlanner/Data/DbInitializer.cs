@@ -83,13 +83,71 @@ namespace AITourismPlanner.Data
             await context.hotels.AddRangeAsync(hotels);
             await context.SaveChangesAsync();
 
-            // Seed Transports
+            // =========================================================
+            // SEED TRANSPORTS - FIXED: Changed TransportModel to Transport
+            // =========================================================
             var transports = new Transport[]
             {
-                new Transport { transport_type = "Bus", company_name = "Daewoo Express", departure_city = "Islamabad", arrival_city = "Murree", fare = 2000, available_seats = 40 },
-                new Transport { transport_type = "Bus", company_name = "NATCO", departure_city = "Rawalpindi", arrival_city = "Hunza", fare = 3000, available_seats = 45 },
-                new Transport { transport_type = "Flight", company_name = "PIA", departure_city = "Islamabad", arrival_city = "Skardu", fare = 18000, available_seats = 120 },
-                new Transport { transport_type = "Flight", company_name = "Serene Air", departure_city = "Islamabad", arrival_city = "Skardu", fare = 20000, available_seats = 100 }
+                new Transport {
+                    transport_type = "Bus",
+                    company_name = "Daewoo Express",
+                    departure_city = "Islamabad",
+                    arrival_city = "Murree",
+                    departure_time = new TimeSpan(8, 0, 0),
+                    arrival_time = new TimeSpan(12, 0, 0),
+                    duration = "4 hours",
+                    fare = 2000,
+                    available_seats = 40,
+                    total_seats = 45,
+                    operator_name = "Daewoo",
+                    amenities = "AC, WiFi, Refreshments",
+                    is_active = true
+                },
+                new Transport {
+                    transport_type = "Bus",
+                    company_name = "NATCO",
+                    departure_city = "Rawalpindi",
+                    arrival_city = "Hunza",
+                    departure_time = new TimeSpan(5, 0, 0),
+                    arrival_time = new TimeSpan(19, 0, 0),
+                    duration = "14 hours",
+                    fare = 3500,
+                    available_seats = 45,
+                    total_seats = 50,
+                    operator_name = "NATCO",
+                    amenities = "AC, Sleeping berths",
+                    is_active = true
+                },
+                new Transport {
+                    transport_type = "Flight",
+                    company_name = "PIA",
+                    departure_city = "Islamabad",
+                    arrival_city = "Skardu",
+                    departure_time = new TimeSpan(9, 0, 0),
+                    arrival_time = new TimeSpan(10, 0, 0),
+                    duration = "1 hour",
+                    fare = 18000,
+                    available_seats = 120,
+                    total_seats = 150,
+                    operator_name = "PIA",
+                    amenities = "Meal, Entertainment",
+                    is_active = true
+                },
+                new Transport {
+                    transport_type = "Flight",
+                    company_name = "Serene Air",
+                    departure_city = "Islamabad",
+                    arrival_city = "Skardu",
+                    departure_time = new TimeSpan(14, 0, 0),
+                    arrival_time = new TimeSpan(15, 0, 0),
+                    duration = "1 hour",
+                    fare = 20000,
+                    available_seats = 100,
+                    total_seats = 120,
+                    operator_name = "Serene Air",
+                    amenities = "Meal, Entertainment",
+                    is_active = true
+                }
             };
             await context.transports.AddRangeAsync(transports);
             await context.SaveChangesAsync();

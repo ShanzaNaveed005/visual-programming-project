@@ -145,6 +145,13 @@
                         </a>
                     </li>
                     
+                    <!-- Transport Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Search", "Transport")">
+                            <i class="fas fa-bus"></i> Transport
+                        </a>
+                    </li>
+                    
                     <!-- Real Hotels Link -->
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Search", "RealHotels")">
@@ -159,7 +166,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="@Url.Action("Index", "Hotels")"><i class="fas fa-hotel"></i> Hotels</a></li>
                             <li><a class="dropdown-item" href="@Url.Action("Search", "RealHotels")"><i class="fas fa-globe"></i> Real Hotels (API)</a></li>
-                            <li><a class="dropdown-item" href="@Url.Action("Index", "Transports")"><i class="fas fa-bus"></i> Transport</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Search", "Transport")"><i class="fas fa-bus"></i> Transport</a></li>
                             <li><a class="dropdown-item" href="@Url.Action("Index", "Chatbot")"><i class="fas fa-comment-dots"></i> AI Chatbot</a></li>
                         </ul>
                     </li>
@@ -235,6 +242,7 @@
                         <li><a href="@Url.Action("Index", "Destinations")">Destinations</a></li>
                         <li><a href="@Url.Action("PlanTrip", "Trips")">AI Planner</a></li>
                         <li><a href="@Url.Action("Index", "Weather")">Weather</a></li>
+                        <li><a href="@Url.Action("Search", "Transport")">Transport</a></li>
                         <li><a href="@Url.Action("Search", "RealHotels")">Real Hotels</a></li>
                         <li><a href="@Url.Action("About", "Home")">About Us</a></li>
                     </ul>

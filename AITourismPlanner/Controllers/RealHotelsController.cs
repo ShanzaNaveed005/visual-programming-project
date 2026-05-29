@@ -180,7 +180,7 @@ namespace AITourismPlanner.Controllers
                 RequestUri = new Uri("https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination?query=Islamabad"),
                 Headers =
         {
-            { "X-RapidAPI-Key", "" },
+            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
             { "X-RapidAPI-Host", "booking-com15.p.rapidapi.com" },
         },
             };

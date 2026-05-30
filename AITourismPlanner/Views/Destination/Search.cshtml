@@ -1,0 +1,63 @@
+﻿@model List<AITourismPlanner.Models.DestinationApiModel>
+@{
+    ViewData["Title"] = "Search Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var searchTerm = ViewBag.SearchTerm as string;
+}
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-search text-primary"></i> Search Results
+        </h1>
+        @if (!string.IsNullOrEmpty(searchTerm))
+        {
+            <p class="lead">Showing results for: <strong>"@searchTerm"</strong></p>
+        }
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="mb-4">
+            <p class="text-muted">Found <strong>@Model.Count</strong> destinations</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var dest in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                        <img src="@dest.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@dest.Name">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold">@dest.Name</h5>
+                            <p class="text-muted small">@dest.City, @dest.State</p>
+                            <p class="card-text small">@(dest.Description.Length > 100 ? dest.Description.Substring(0, 100) + "..." : dest.Description)</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">PKR @dest.EstimatedCost.ToString("N0")</span>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star"></i> @dest.Rating.ToString("0.0")
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-4 px-4">
+                            <a href="@Url.Action("Details", new { name = dest.Name })" class="btn btn-outline-primary w-100">
+                                View Details <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-4x text-muted mb-3"></i>
+            <h3>No destinations found</h3>
+            <p>Try searching with a different term</p>
+            <a href="@Url.Action("Index", "Destination")" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Browse All Destinations
+            </a>
+        </div>
+    }
+</div>

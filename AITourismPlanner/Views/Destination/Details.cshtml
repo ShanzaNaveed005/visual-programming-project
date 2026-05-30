@@ -1,0 +1,164 @@
+﻿@model AITourismPlanner.Models.DestinationApiModel
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Destination")">Destinations</a></li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <!-- Destination Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold">@Model.Name</h1>
+            <p class="text-muted">
+                <i class="fas fa-map-marker-alt text-primary"></i> @Model.City, @Model.State, @Model.Country
+            </p>
+            <div class="mb-3">
+                @for (int i = 1; i <= (int)Model.Rating; i++)
+                {
+                    <i class="fas fa-star text-warning"></i>
+                }
+                @if (Model.Rating % 1 >= 0.5)
+                {
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                }
+                <span class="ms-2 text-muted">@Model.Rating.ToString("0.0") rating</span>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary fs-6 p-3">
+                <i class="fas fa-tag"></i> @Model.Category
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Image -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+        <img src="@Model.ImageUrl" class="img-fluid" style="width: 100%; max-height: 450px; object-fit: cover;" alt="@Model.Name">
+    </div>
+
+    <div class="row g-4">
+        <!-- Description & Details -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-info-circle text-primary"></i> About @Model.Name
+                    </h4>
+                    <p class="fs-5">@Model.Description</p>
+                </div>
+            </div>
+
+            <!-- Things to Do -->
+            @if (Model.ThingsToDo != null && Model.ThingsToDo.Any())
+            {
+                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold">
+                            <i class="fas fa-check-circle text-primary"></i> Things to Do
+                        </h4>
+                        <div class="row">
+                            @foreach (var activity in Model.ThingsToDo)
+                            {
+                                <div class="col-md-6 mb-2">
+                                    <i class="fas fa-arrow-right text-primary me-2"></i> @activity
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Best Time to Visit & Weather -->
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-calendar-alt text-primary"></i> Best Time to Visit
+                    </h4>
+                    <p class="fs-5">@Model.BestTimeToVisit</p>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Weather))
+                    {
+                        <hr>
+                        <h5><i class="fas fa-cloud-sun text-primary"></i> Weather</h5>
+                        <p>@Model.Weather</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Info Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 sticky-top" style="top: 90px;">
+                <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-info-circle"></i> Quick Info
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <small class="text-muted">Estimated Cost</small>
+                        <p class="fw-bold fs-4 text-primary mb-0">PKR @Model.EstimatedCost.ToString("N0")</p>
+                        <small class="text-muted">per person (3-4 days)</small>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Location</small>
+                        <p class="mb-0">
+                            <i class="fas fa-map-marker-alt text-primary"></i> @Model.City, @Model.State
+                        </p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Category</small>
+                        <p>
+                            <span class="badge bg-info">@Model.Category</span>
+                        </p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-primary w-100" id="planTripBtn">
+                            <i class="fas fa-calendar-check"></i> Plan Your Trip
+                        </a>
+                        <small class="text-muted d-block mt-2">Booking feature coming soon</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+    }
+    .sticky-top {
+        transition: all 0.3s ease;
+    }
+</style>
+
+<script>
+    document.getElementById('planTripBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Booking system coming soon! This feature will be added in the next phase.');
+    });
+</script>

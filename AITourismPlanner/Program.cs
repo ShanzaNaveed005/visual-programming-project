@@ -39,7 +39,8 @@ builder.Services.AddScoped<IHotelApiService, HotelApiService>();
 builder.Services.AddHttpClient();
 // Add HTTP Client for APIs
 builder.Services.AddHttpClient();
-
+builder.Services.AddScoped<IDestinationService, DestinationService>();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

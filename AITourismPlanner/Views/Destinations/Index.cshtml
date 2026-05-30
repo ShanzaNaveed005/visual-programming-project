@@ -1,98 +1,258 @@
-﻿@model List<AITourismPlanner.Services.DestinationInfo>
+﻿@using AITourismPlanner.ViewModels
+@model HomepageViewModel
 @{
-    ViewData["Title"] = "Explore Destinations";
+    ViewData["Title"] = "AI Tourism Planner - Explore Pakistan";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container py-4">
-    <!-- Header -->
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Explore Destinations</h1>
-        <p class="lead text-muted">Discover amazing places in Pakistan</p>
-    </div>
+<!-- Hero Banner -->
+<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1587925358603-c2eea5305bbc?w=1600'); background-size: cover; background-position: center; height: 80vh;">
+    <div class="container h-100 d-flex align-items-center">
+        <div class="text-center text-white w-100">
+            <h1 class="display-1 fw-bold">Explore Pakistan</h1>
+            <p class="lead fs-3">Discover breathtaking destinations with AI-powered recommendations</p>
 
-    <!-- Search -->
-    <div class="card shadow-sm border-0 rounded-4 mb-5">
-        <div class="card-body p-4">
-            <form method="get" class="row g-3">
-                <div class="col-md-10">
-                    <input type="text" name="searchTerm"
-                           class="form-control form-control-lg"
-                           placeholder="Search any city e.g. Lahore, Hunza, Swat..."
-                           value="@ViewBag.SearchTerm">
+            <!-- Search Bar -->
+            <div class="search-container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group input-group-lg shadow">
+                            <input type="text" id="searchInput" class="form-control border-0 py-3" placeholder="Where do you want to go?" autocomplete="off">
+                            <button class="btn btn-primary px-4" onclick="searchDestination()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <div id="autocompleteResults" class="autocomplete-dropdown"></div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+</section>
 
-    <!-- Results -->
-    @if (Model != null && Model.Any())
-    {
-        <div class="row g-4">
-            @foreach (var dest in Model)
-            {
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm border-0 rounded-4">
-                        <!-- IMAGE - Direct Unsplash URL -->
-                        <img src="https://source.unsplash.com/featured/600x400/?@dest.Name,travel"
-                             class="card-img-top rounded-top-4"
-                             style="height: 200px; object-fit: cover;"
-                             alt="@dest.Name"
-                             onerror="this.src='https://source.unsplash.com/featured/600x400/?travel'">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@dest.Name</h5>
-                            <p class="text-muted small mb-2">
-                                <i class="fas fa-users me-1"></i>
-                                Population: @dest.Population.ToString("N0")
-                            </p>
-                            <p class="text-muted small mb-3">
-                                <i class="fas fa-map-pin me-1"></i>
-                                @dest.Lat.ToString("0.00"), @dest.Lon.ToString("0.00")
-                            </p>
-                            @if (dest.Attractions != null && dest.Attractions.Any())
-                            {
-                                <p class="small text-success">
-                                    <i class="fas fa-landmark me-1"></i>
-                                    @dest.Attractions.Count attractions nearby
-                                </p>
-                            }
-                            <a href="@Url.Action("ApiDetails", "Destinations", new { cityName = dest.Name })"
-                               class="btn btn-primary w-100 mt-2">
-                                Explore <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
+<!-- Category Tabs -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold">Explore by Category</h2>
+        <p class="lead text-muted">Find your perfect getaway</p>
+    </div>
+    <div class="row g-4 text-center">
+        @foreach (var cat in new[] { "Mountains", "Valleys", "Historical", "Urban", "Beach", "Adventure" })
+        {
+            <div class="col-md-2 col-4">
+                <a href="@Url.Action("Search", "Destination", new { category = cat })" class="text-decoration-none">
+                    <div class="category-card p-3 rounded-4 shadow-sm bg-white">
+                        <i class="fas fa-@(cat == "Mountains" ? "mountain" : cat == "Beach" ? "umbrella-beach" : cat == "Historical" ? "landmark" : "map-marker-alt") fa-2x text-primary mb-2"></i>
+                        <p class="mb-0 fw-bold">@cat</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Featured Destinations -->
+<section class="container py-5 bg-light rounded-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="display-5 fw-bold">🌟 Featured Destinations</h2>
+            <p class="text-muted">Most loved places by our travelers</p>
+        </div>
+        <a href="@Url.Action("Search", "Destination")" class="btn btn-outline-primary">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="row g-4">
+        @foreach (var dest in Model.FeaturedDestinations)
+        {
+            <div class="col-md-4 col-lg-4">
+                <div class="card destination-card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="@dest.ImageUrl" class="card-img-top" style="height: 220px; object-fit: cover;" alt="@dest.Name">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold">@dest.Name</h5>
+                        <p class="text-muted"><i class="fas fa-map-marker-alt text-primary"></i> @dest.State, @dest.Country</p>
+                        <p class="card-text small">@(dest.Description?.Length > 100 ? dest.Description.Substring(0, 100) + "..." : dest.Description)</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold fs-5">PKR @dest.EstimatedCost?.ToString("N0")</span>
+                            <span class="badge bg-info">@dest.Category</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pb-4 px-4">
+                        <a href="@Url.Action("Details", "Destination", new { name = dest.Name })" class="btn btn-primary w-100">View Details <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Trending Now -->
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="display-5 fw-bold">🔥 Trending Now</h2>
+            <p class="text-muted">Most viewed destinations this week</p>
+        </div>
+    </div>
+    <div class="row g-4">
+        @foreach (var dest in Model.TrendingDestinations)
+        {
+            <div class="col-md-4 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="@dest.ImageUrl" class="card-img-top" style="height: 180px; object-fit: cover;" alt="@dest.Name">
+                    <div class="card-body p-3">
+                        <h6 class="card-title fw-bold">@dest.Name</h6>
+                        <p class="text-muted small">@dest.State</p>
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-primary">Trending</span>
+                            <a href="@Url.Action("Details", "Destination", new { name = dest.Name })" class="text-primary">Explore <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="text-center py-5">
-            <i class="fas fa-map-marked-alt fa-4x text-muted mb-3"></i>
-            <h3>No destinations found</h3>
-            <p class="text-muted">Try searching a different city</p>
-        </div>
-    }
-</div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Seasonal Picks -->
+<section class="container py-5 bg-gradient-summer rounded-4">
+    <div class="text-center mb-4">
+        <h2 class="display-5 fw-bold">☀️ Summer Specials</h2>
+        <p class="lead">Escape the heat with these cool destinations</p>
+    </div>
+    <div class="row g-4">
+        @foreach (var dest in Model.SeasonalPicks)
+        {
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="@dest.ImageUrl" class="card-img-top" style="height: 160px; object-fit: cover;" alt="@dest.Name">
+                    <div class="card-body text-center">
+                        <h6 class="card-title fw-bold">@dest.Name</h6>
+                        <a href="@Url.Action("Details", "Destination", new { name = dest.Name })" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold">❤️ What Travelers Say</h2>
+        <p class="lead text-muted">Trusted by thousands of happy travelers</p>
+    </div>
+    <div class="row g-4">
+        @foreach (var review in Model.RecentReviews)
+        {
+            <div class="col-md-4">
+                <div class="card border-0 bg-light rounded-4 p-4">
+                    <div class="mb-2">
+                        @for (int i = 1; i <= review.Rating; i++)
+                        {
+                            <i class="fas fa-star text-warning"></i>
+                        }
+                    </div>
+                    <p class="mb-2">"@(review.Comment.Length > 100 ? review.Comment.Substring(0, 100) + "..." : review.Comment)"</p>
+                    <div class="mt-2">
+                        <strong>@review.UserName</strong>
+                        <small class="text-muted d-block">Visited @review.DestinationName</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
 
 <style>
-    .card {
-        transition: transform 0.3s ease;
+    .category-card {
+        transition: transform 0.3s;
     }
 
-        .card:hover {
+        .category-card:hover {
             transform: translateY(-5px);
         }
+
+    .destination-card {
+        transition: transform 0.3s;
+    }
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+        }
+
+    .bg-gradient-summer {
+        background: linear-gradient(135deg, #fff5e6 0%, #ffe0b3 100%);
+    }
 
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
     }
+
+    .search-container {
+        position: relative;
+    }
+
+    .autocomplete-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none;
+    }
+
+    .autocomplete-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+        .autocomplete-item:hover {
+            background: #f8f9fa;
+        }
 </style>
-</style>
+
+<script>
+    // Autocomplete
+    $('#searchInput').on('input', function() {
+        var term = $(this).val();
+        if (term.length > 1) {
+            $.ajax({
+                url: '@Url.Action("Autocomplete", "Destination")',
+                type: 'GET',
+                data: { term: term },
+                success: function(data) {
+                    var dropdown = $('#autocompleteResults');
+                    dropdown.empty().show();
+                    data.forEach(function(item) {
+                        dropdown.append('<div class="autocomplete-item" onclick="selectDestination(\'' + item + '\')">' + item + '</div>');
+                    });
+                }
+            });
+        } else {
+            $('#autocompleteResults').hide();
+        }
+    });
+
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.search-container').length) {
+            $('#autocompleteResults').hide();
+        }
+    });
+
+    function selectDestination(name) {
+        $('#searchInput').val(name);
+        $('#autocompleteResults').hide();
+        searchDestination();
+    }
+
+    function searchDestination() {
+        var query = $('#searchInput').val();
+        if (query) {
+            window.location.href = '@Url.Action("Details", "Destination")?name=' + encodeURIComponent(query);
+        }
+    }
+</script>

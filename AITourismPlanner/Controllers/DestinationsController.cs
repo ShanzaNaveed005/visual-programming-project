@@ -33,29 +33,82 @@ namespace AITourismPlanner.Controllers
         {
             ViewBag.SearchTerm = searchTerm;
 
-            var popularCities = new List<string>
-            {
-                "Hunza", "Murree", "Skardu", "Lahore",
-                "Islamabad", "Naran", "Swat", "Quetta"
-            };
+            // Pakistan ke 20 popular cities
+            var popularCities = new List<(string Name, string Image)>
+    {
+        ("Hunza", "https://images.unsplash.com/photo-1586500036706-41963de24d8b?w=600"),
+        ("Murree", "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600"),
+        ("Skardu", "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=600"),
+        ("Lahore", "https://images.unsplash.com/photo-1599030179987-a7d0ce01bd23?w=600"),
+        ("Islamabad", "https://images.unsplash.com/photo-1609700660014-c4c68e81e84b?w=600"),
+        ("Naran", "https://images.unsplash.com/photo-1586500036706-41963de24d8b?w=600"),
+        ("Swat", "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600"),
+        ("Quetta", "https://images.unsplash.com/photo-1567596275753-92607c3ce1ae?w=600"),
+        ("Karachi", "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"),
+        ("Peshawar", "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600"),
+        ("Gilgit", "https://images.unsplash.com/photo-1586500036706-41963de24d8b?w=600"),
+        ("Chitral", "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600"),
+        ("Muzaffarabad", "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=600"),
+        ("Abbottabad", "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600"),
+        ("Multan", "https://images.unsplash.com/photo-1599030179987-a7d0ce01bd23?w=600"),
+        ("Faisalabad", "https://images.unsplash.com/photo-1609700660014-c4c68e81e84b?w=600"),
+        ("Bahawalpur", "https://images.unsplash.com/photo-1567596275753-92607c3ce1ae?w=600"),
+        ("Gwadar", "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"),
+        ("Ziarat", "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600"),
+        ("Kalash", "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600"),
+    };
 
+            // Search filter
             if (!string.IsNullOrEmpty(searchTerm) && searchTerm != "Pakistan")
             {
-                popularCities = new List<string> { searchTerm };
+                popularCities = popularCities
+                    .Where(c => c.Name.ToLower().Contains(searchTerm.ToLower()))
+                    .ToList();
+
+                // Agar list mein nahi mila to API se dhundo
+                if (!popularCities.Any())
+                {
+                    popularCities = new List<(string, string)>
+            {
+                (searchTerm, "https://images.unsplash.com/photo-1586500036706-41963de24d8b?w=600")
+            };
+                }
             }
 
-            var destinations = new List<DestinationInfo>();
+            // API se city info lo
+            var destinations = new List<DestinationCard>();
 
             foreach (var city in popularCities)
             {
-                var info = await _destinationApi.GetDestinationInfoAsync(city);
+                var info = await _destinationApi.GetDestinationInfoAsync(city.Name);
                 if (info != null)
-                    destinations.Add(info);
+                {
+                    destinations.Add(new DestinationCard
+                    {
+                        Name = info.Name,
+                        Country = info.Country,
+                        Lat = info.Lat,
+                        Lon = info.Lon,
+                        Population = info.Population,
+                        ImageUrl = city.Image,
+                        AttractionsCount = info.Attractions?.Count ?? 0
+                    });
+                }
+                else
+                {
+                    // API se nahi aaya to bhi show karo image ke saath
+                    destinations.Add(new DestinationCard
+                    {
+                        Name = city.Name,
+                        Country = "PK",
+                        ImageUrl = city.Image,
+                        AttractionsCount = 0
+                    });
+                }
             }
 
             return View(destinations);
         }
-
         // =========================================================
         // API DETAILS — Sab API se
         // =========================================================
@@ -97,7 +150,7 @@ namespace AITourismPlanner.Controllers
             string city, string checkIn, string checkOut)
         {
             var hotels = new List<RealHotel>();
-            var apiKey = "";
+            var apiKey = "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009";
             var host = "booking-com15.p.rapidapi.com";
 
             try
@@ -232,7 +285,7 @@ namespace AITourismPlanner.Controllers
         public async Task<IActionResult> DebugDestHotels2()
         {
             var client = new HttpClient();
-            var apiKey = "";
+            var apiKey = "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009";
             var host = "booking-com15.p.rapidapi.com";
 
             // Step 1 - dest_id check karo
@@ -364,5 +417,15 @@ namespace AITourismPlanner.Controllers
 
             return Json(new { success = true, message = "Review added!" });
         }
+    }
+    public class DestinationCard
+    {
+        public string Name { get; set; }
+        public string Country { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+        public int Population { get; set; }
+        public string ImageUrl { get; set; }
+        public int AttractionsCount { get; set; }
     }
 }

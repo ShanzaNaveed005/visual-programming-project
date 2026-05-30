@@ -15,8 +15,6 @@ namespace AITourismPlanner.ViewModels
         public DestinationDetailModel Destination { get; set; } = new();
         public List<HotelModel> Hotels { get; set; } = new();
         public WeatherData CurrentWeather { get; set; } = new();
-        public WeatherForecastData WeatherForecast { get; set; } = new();
-        public List<TransportOption> TransportOptions { get; set; } = new();
         public List<ReviewViewModel> Reviews { get; set; } = new();
         public double AverageRating { get; set; }
         public int TotalReviews { get; set; }

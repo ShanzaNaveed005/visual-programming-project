@@ -56,17 +56,29 @@ namespace AITourismPlanner.Services
                         else
                             hotel.Address = city;
 
-                        if (item?.property?.reviewScore != null &&
-                            double.TryParse(item.property.reviewScore.ToString(), out var rating))
-                            hotel.Rating = rating;
+                        // FIXED: Explicit type declaration instead of out var
+                        if (item?.property?.reviewScore != null)
+                        {
+                            string ratingStr = item.property.reviewScore.ToString();
+                            double ratingValue;
+                            if (double.TryParse(ratingStr, out ratingValue))
+                            {
+                                hotel.Rating = ratingValue;
+                            }
+                        }
 
                         if (item?.property?.photoUrls != null && item.property.photoUrls.Count > 0)
                             hotel.ImageUrl = item.property.photoUrls[0]?.ToString();
 
-                        if (item?.property?.priceBreakdown?.grossPrice?.value != null &&
-                            decimal.TryParse(item.property.priceBreakdown.grossPrice.value.ToString(), out var priceUsd))
+                        // FIXED: Explicit type declaration instead of out var
+                        if (item?.property?.priceBreakdown?.grossPrice?.value != null)
                         {
-                            hotel.PricePerNight = priceUsd * 278;
+                            string priceStr = item.property.priceBreakdown.grossPrice.value.ToString();
+                            decimal priceUsdValue;
+                            if (decimal.TryParse(priceStr, out priceUsdValue))
+                            {
+                                hotel.PricePerNight = priceUsdValue * 278;
+                            }
                         }
 
                         hotel.BookingLink = $"https://www.booking.com/hotel/{hotel.Id}.html";

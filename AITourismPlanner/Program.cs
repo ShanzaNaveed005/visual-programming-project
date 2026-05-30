@@ -35,14 +35,11 @@ builder.Services.AddScoped<IChatbotService, ChatbotService>();
 
 // 👇 YEH LINE IS JAGAH ADD KARDI HAI
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IDestinationApiService, DestinationApiService>();
 builder.Services.AddScoped<IHotelApiService, HotelApiService>();
-builder.Services.AddScoped<IWeatherApiService, WeatherApiService>();
-builder.Services.AddScoped<ITransportApiService, TransportApiService>();
 builder.Services.AddHttpClient();
 // Add HTTP Client for APIs
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IDestinationApiService, DestinationApiService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

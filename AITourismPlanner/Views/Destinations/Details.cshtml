@@ -35,7 +35,7 @@
                         @for (int i = 1; i <= 5; i++)
                         {
                             <i class="fas fa-star @(i <= (int)Model.Destination.rating_average
-                                                               ? "text-warning" : "text-white-50")"></i>
+                                                                                                                          ? "text-warning" : "text-white-50")"></i>
                     }
                     <span class="ms-2">
                         @Model.Destination.rating_average.ToString("0.0")
@@ -114,7 +114,7 @@
 
         <!-- Nearby Attractions -->
         @if (Model.DestinationInfo?.Attractions != null &&
-             Model.DestinationInfo.Attractions.Any())
+                     Model.DestinationInfo.Attractions.Any())
         {
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
@@ -149,7 +149,7 @@
 
         <!-- Weather Forecast -->
         @if (Model.Forecast?.DailyForecasts != null &&
-             Model.Forecast.DailyForecasts.Any())
+                     Model.Forecast.DailyForecasts.Any())
         {
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
@@ -279,7 +279,7 @@
                 @if (Model.Reviews.Any())
                 {
                     @foreach (var review in Model.Reviews
-                        .OrderByDescending(r => r.review_date))
+                                            .OrderByDescending(r => r.review_date))
                     {
                         <div class="card border-0 shadow-sm rounded-4 mb-3">
                             <div class="card-body p-4">
@@ -350,8 +350,8 @@
                     </tr>
                 </table>
                 <a href="@Url.Action("PlanTrip", "Trips",
-                                           new { destinationId = Model.Destination.destination_id })"
-                   class="btn btn-primary w-100 mt-2">
+                                                                                  new { destinationId = Model.Destination.destination_id })"
+                       class="btn btn-primary w-100 mt-2">
                     <i class="fas fa-robot me-2"></i> Plan with AI
                 </a>
                 @if (userId.HasValue)

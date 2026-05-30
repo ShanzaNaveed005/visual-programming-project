@@ -1,0 +1,164 @@
+2026-05-30 22:05:22 - INDEX called with searchTerm: Pakistan
+2026-05-30 22:05:22 - Cities to fetch: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:05:22 - Fetching city: Hunza
+2026-05-30 22:05:24 - ❌ FAILED: Hunza - returned NULL from API
+2026-05-30 22:05:24 - Fetching city: Murree
+2026-05-30 22:05:24 - ❌ FAILED: Murree - returned NULL from API
+2026-05-30 22:05:24 - Fetching city: Skardu
+2026-05-30 22:05:24 - ❌ FAILED: Skardu - returned NULL from API
+2026-05-30 22:05:24 - Fetching city: Lahore
+2026-05-30 22:05:24 - ❌ FAILED: Lahore - returned NULL from API
+2026-05-30 22:05:24 - Fetching city: Islamabad
+2026-05-30 22:05:25 - ❌ FAILED: Islamabad - returned NULL from API
+2026-05-30 22:05:25 - Fetching city: Naran
+2026-05-30 22:05:25 - ❌ FAILED: Naran - returned NULL from API
+2026-05-30 22:05:25 - Fetching city: Swat
+2026-05-30 22:05:25 - ❌ FAILED: Swat - returned NULL from API
+2026-05-30 22:05:25 - Fetching city: Quetta
+2026-05-30 22:05:25 - ❌ FAILED: Quetta - returned NULL from API
+2026-05-30 22:05:25 - INDEX complete. Successful: 0, Failed: 8
+2026-05-30 22:05:25 - Failed cities: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:06:11 - === DEBUG API RESPONSE FOR: Islamabad ===
+
+--- TEST 1: Direct OpenTripMap API Call ---
+Status Code: Forbidden
+Response JSON: {"message":"You are not subscribed to this API."}
+
+--- TEST 2: Through IDestinationApiService ---
+Result: NULL - No data returned from service
+
+--- TEST 3: Weather API ---
+Temperature: 26.58°C
+Condition: Clear
+Humidity: 54%
+
+--- TEST 4: Database Destinations ---
+Total destinations in DB: 8
+  - Hunza Valley (Hunza)
+  - Murree (Murree)
+  - Skardu (Skardu)
+  - Swat Valley (Swat)
+  - Naran Kaghan (Naran)
+
+2026-05-30 22:21:43 - INDEX called with searchTerm: Pakistan
+2026-05-30 22:21:44 - Cities to fetch: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:21:44 - Fetching city: Hunza
+2026-05-30 22:21:45 - ❌ FAILED: Hunza - returned NULL from API
+2026-05-30 22:21:45 - Fetching city: Murree
+2026-05-30 22:21:45 - ❌ FAILED: Murree - returned NULL from API
+2026-05-30 22:21:45 - Fetching city: Skardu
+2026-05-30 22:21:45 - ❌ FAILED: Skardu - returned NULL from API
+2026-05-30 22:21:45 - Fetching city: Lahore
+2026-05-30 22:21:46 - ❌ FAILED: Lahore - returned NULL from API
+2026-05-30 22:21:46 - Fetching city: Islamabad
+2026-05-30 22:21:46 - ❌ FAILED: Islamabad - returned NULL from API
+2026-05-30 22:21:46 - Fetching city: Naran
+2026-05-30 22:21:46 - ❌ FAILED: Naran - returned NULL from API
+2026-05-30 22:21:46 - Fetching city: Swat
+2026-05-30 22:21:46 - ❌ FAILED: Swat - returned NULL from API
+2026-05-30 22:21:46 - Fetching city: Quetta
+2026-05-30 22:21:46 - ❌ FAILED: Quetta - returned NULL from API
+2026-05-30 22:21:46 - INDEX complete. Successful: 0, Failed: 8
+2026-05-30 22:21:46 - Failed cities: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:21:49 - INDEX called with searchTerm: Pakistan
+2026-05-30 22:21:49 - Cities to fetch: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:21:49 - Fetching city: Hunza
+2026-05-30 22:21:50 - ❌ FAILED: Hunza - returned NULL from API
+2026-05-30 22:21:50 - Fetching city: Murree
+2026-05-30 22:21:50 - ❌ FAILED: Murree - returned NULL from API
+2026-05-30 22:21:50 - Fetching city: Skardu
+2026-05-30 22:21:51 - ❌ FAILED: Skardu - returned NULL from API
+2026-05-30 22:21:51 - Fetching city: Lahore
+2026-05-30 22:21:51 - ❌ FAILED: Lahore - returned NULL from API
+2026-05-30 22:21:51 - Fetching city: Islamabad
+2026-05-30 22:21:51 - ❌ FAILED: Islamabad - returned NULL from API
+2026-05-30 22:21:51 - Fetching city: Naran
+2026-05-30 22:21:51 - ❌ FAILED: Naran - returned NULL from API
+2026-05-30 22:21:51 - Fetching city: Swat
+2026-05-30 22:21:51 - ❌ FAILED: Swat - returned NULL from API
+2026-05-30 22:21:51 - Fetching city: Quetta
+2026-05-30 22:21:52 - ❌ FAILED: Quetta - returned NULL from API
+2026-05-30 22:21:52 - INDEX complete. Successful: 0, Failed: 8
+2026-05-30 22:21:52 - Failed cities: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:22:23 - === DEBUG API RESPONSE FOR: Islamabad ===
+
+--- TEST 1: Direct OpenTripMap API Call ---
+Status Code: Forbidden
+Response JSON: {"message":"You are not subscribed to this API."}
+
+--- TEST 2: Through IDestinationApiService ---
+Result: NULL - No data returned from service
+
+--- TEST 3: Weather API ---
+Temperature: 26.58°C
+Condition: Clear
+Humidity: 54%
+
+--- TEST 4: Database Destinations ---
+Total destinations in DB: 8
+  - Hunza Valley (Hunza)
+  - Murree (Murree)
+  - Skardu (Skardu)
+  - Swat Valley (Swat)
+  - Naran Kaghan (Naran)
+
+2026-05-30 22:23:27 - === DEBUG INDEX - Search Term: Pakistan ===
+
+Cities to fetch: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+
+--- Fetching: Hunza ---
+❌ FAILED: Hunza - returned NULL
+
+--- Fetching: Murree ---
+❌ FAILED: Murree - returned NULL
+
+--- Fetching: Skardu ---
+❌ FAILED: Skardu - returned NULL
+
+--- Fetching: Lahore ---
+❌ FAILED: Lahore - returned NULL
+
+--- Fetching: Islamabad ---
+❌ FAILED: Islamabad - returned NULL
+
+--- Fetching: Naran ---
+❌ FAILED: Naran - returned NULL
+
+--- Fetching: Swat ---
+❌ FAILED: Swat - returned NULL
+
+--- Fetching: Quetta ---
+❌ FAILED: Quetta - returned NULL
+
+
+=== SUMMARY ===
+Successful: 0
+Failed: 8
+Failed cities: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+
+2026-05-30 22:30:42 - INDEX called with searchTerm: Pakistan
+2026-05-30 22:30:42 - Cities to fetch: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:30:42 - Fetching city: Hunza
+2026-05-30 22:30:43 - ❌ FAILED: Hunza - returned NULL from API
+2026-05-30 22:30:43 - Fetching city: Murree
+2026-05-30 22:30:44 - ❌ FAILED: Murree - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Skardu
+2026-05-30 22:30:44 - ❌ FAILED: Skardu - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Lahore
+2026-05-30 22:30:44 - ❌ FAILED: Lahore - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Islamabad
+2026-05-30 22:30:44 - ❌ FAILED: Islamabad - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Naran
+2026-05-30 22:30:44 - ❌ FAILED: Naran - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Swat
+2026-05-30 22:30:44 - ❌ FAILED: Swat - returned NULL from API
+2026-05-30 22:30:44 - Fetching city: Quetta
+2026-05-30 22:30:45 - ❌ FAILED: Quetta - returned NULL from API
+2026-05-30 22:30:45 - INDEX complete. Successful: 0, Failed: 8
+2026-05-30 22:30:45 - Failed cities: Hunza, Murree, Skardu, Lahore, Islamabad, Naran, Swat, Quetta
+2026-05-30 22:30:53 - INDEX called with searchTerm: Islamabad
+2026-05-30 22:30:53 - Cities to fetch: Islamabad
+2026-05-30 22:30:53 - Fetching city: Islamabad
+2026-05-30 22:30:54 - ❌ FAILED: Islamabad - returned NULL from API
+2026-05-30 22:30:54 - INDEX complete. Successful: 0, Failed: 1
+2026-05-30 22:30:54 - Failed cities: Islamabad

@@ -13,13 +13,7 @@ namespace AITourismPlanner.Services
         public List<NearbyPlace> Attractions { get; set; } = new();
 
         // ✅ YEH METHOD ADD KARO - Image URL generate karne ke liye
-        public string GetImageUrl(int width = 800, int height = 600)
-        {
-            if (string.IsNullOrEmpty(Name))
-                return "https://source.unsplash.com/featured/800x600/?travel";
 
-            return $"https://source.unsplash.com/featured/{width}x{height}/?{Uri.EscapeDataString(Name)},travel";
-        }
     }
 
     public class NearbyPlace
@@ -30,6 +24,8 @@ namespace AITourismPlanner.Services
         public double Lat { get; set; }
         public double Lon { get; set; }
         public double Distance { get; set; }
+        public string ImageUrl { get; set; }
+        public string Description { get; set; }
     }
 
     public interface IDestinationApiService
@@ -95,7 +91,7 @@ namespace AITourismPlanner.Services
         }
 
         public async Task<List<NearbyPlace>> GetNearbyAttractionsAsync(
-            double lat, double lon, int radius = 10000)
+           double lat, double lon, int radius = 10000)
         {
             var places = new List<NearbyPlace>();
 
@@ -151,5 +147,6 @@ namespace AITourismPlanner.Services
 
             return places;
         }
+
     }
 }

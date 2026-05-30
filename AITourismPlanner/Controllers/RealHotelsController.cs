@@ -180,7 +180,7 @@ namespace AITourismPlanner.Controllers
                     "?name=Islamabad"),
                 Headers =
         {
-            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
+            { "X-RapidAPI-Key", "35f85c261fmsh0b3fdef51d3d998p1g5fajsn410ef6c10768" },
             { "X-RapidAPI-Host", "opentripmap-places-v1.p.rapidapi.com" },
         },
             };
@@ -200,7 +200,7 @@ namespace AITourismPlanner.Controllers
                 RequestUri = new Uri("https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination?query=Islamabad"),
                 Headers =
         {
-            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
+            { "X-RapidAPI-Key", "35f85c261fmsh0b3fdef51d3d998p1g5fajsn410ef6c10768" },
             { "X-RapidAPI-Host", "booking-com15.p.rapidapi.com" },
         },
             };
@@ -243,7 +243,7 @@ namespace AITourismPlanner.Controllers
                     "&limit=10"),
                 Headers =
         {
-            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
+            { "X-RapidAPI-Key", "35f85c261fmsh0b3fdef51d3d998p1g5fajsn410ef6c10768" },
             { "X-RapidAPI-Host", "opentripmap-places-v1.p.rapidapi.com" },
         },
             };

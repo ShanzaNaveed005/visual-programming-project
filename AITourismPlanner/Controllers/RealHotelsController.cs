@@ -169,6 +169,26 @@ namespace AITourismPlanner.Controllers
 
             return hotels;
         }
+        public async Task<IActionResult> TestDestinations()
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(
+                    "https://opentripmap-places-v1.p.rapidapi.com/en/places/geoname" +
+                    "?name=Islamabad"),
+                Headers =
+        {
+            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
+            { "X-RapidAPI-Host", "opentripmap-places-v1.p.rapidapi.com" },
+        },
+            };
+
+            var response = await client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            return Content(json, "application/json");
+        }
         public async Task<IActionResult> DebugSearch()
         {
             var client = new HttpClient();
@@ -208,6 +228,30 @@ namespace AITourismPlanner.Controllers
 
             return Content($"DestId: {destId}, DestType: {destType}", "text/plain");
         }
+        public async Task<IActionResult> TestPlaces()
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(
+                    "https://opentripmap-places-v1.p.rapidapi.com/en/places/radius" +
+                    "?radius=10000" +
+                    "&lon=73.04329" +
+                    "&lat=33.72148" +
+                    "&kinds=interesting_places" +
+                    "&limit=10"),
+                Headers =
+        {
+            { "X-RapidAPI-Key", "39e0f1a7dbmsh662f2c365790c0cp1e7f65jsnbe77af5f1009" },
+            { "X-RapidAPI-Host", "opentripmap-places-v1.p.rapidapi.com" },
+        },
+            };
+
+            var response = await client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            return Content(json, "application/json");
+        }
     }
 
     public class HotelResult
@@ -220,5 +264,6 @@ namespace AITourismPlanner.Controllers
         public string ImageUrl { get; set; }
         public int? ReviewCount { get; set; }
     }
+
 
 }

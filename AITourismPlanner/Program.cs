@@ -18,7 +18,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySQL(connectionString)  // UseMySQL (not UseMySql)
 );
-
+builder.Services.AddScoped<IImageService, ImageService>();
 // Add session support
 builder.Services.AddSession(options =>
 {
@@ -38,7 +38,7 @@ builder.Services.AddHttpContextAccessor();
 
 // Add HTTP Client for APIs
 builder.Services.AddHttpClient();
-
+builder.Services.AddScoped<IDestinationApiService, DestinationApiService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

@@ -1,15 +1,13 @@
-﻿using AITourismPlanner.Models;
-using AITourismPlanner.Services;
+﻿using AITourismPlanner.Services;
 
 namespace AITourismPlanner.ViewModels
 {
-    public class DestinationDetailViewModel
+    public class ApiDestinationViewModel
     {
-        public Destination Destination { get; set; }
+        public string CityName { get; set; }
         public DestinationInfo DestinationInfo { get; set; }
         public WeatherData CurrentWeather { get; set; }
         public WeatherForecast Forecast { get; set; }
         public List<RealHotel> NearbyHotels { get; set; } = new();
-        public List<Review> Reviews { get; set; } = new();
     }
 }
